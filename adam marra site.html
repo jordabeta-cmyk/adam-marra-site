@@ -1,0 +1,4131 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adam Marra. Content Marketing per Personal Brand</title>
+<meta name="description" content="Strategia, contenuti e gestione per costruire un personal brand che genera autorità, fiducia e vendite.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+
+<!-- GSAP + ScrollTrigger + Lenis -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+
+<style>
+/* ============================================
+   RESET + VARIABLES
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #080808;
+  --bg-warm: #0f0d0b;
+  --bg-card: #111110;
+  --gold: #c9a84c;
+  --gold-light: #e2c878;
+  --gold-dark: #a68a3a;
+  --cream: #f2ead8;
+  --cream-muted: #d4c9b4;
+  --text: #a89e8e;
+  --text-muted: #5e5950;
+  --border: rgba(201, 168, 76, 0.12);
+  --border-hover: rgba(201, 168, 76, 0.35);
+  --font-heading: 'League Spartan', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-accent: 'Instrument Serif', serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --nav-height: 80px;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+body.locked {
+  overflow: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; }
+
+.section-pad {
+  padding: clamp(80px, 10vw, 160px) clamp(24px, 5vw, 80px);
+}
+
+/* ============================================
+   FILM GRAIN OVERLAY
+   ============================================ */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* ============================================
+   CUSTOM CURSOR
+   ============================================ */
+@media (min-width: 993px) {
+  * { cursor: none !important; }
+}
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+}
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid rgba(201,168,76,0.35);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+}
+.cursor-dot.hovering {
+  width: 50px;
+  height: 50px;
+  background: rgba(201,168,76,0.15);
+}
+.cursor-ring.hovering {
+  width: 60px;
+  height: 60px;
+  border-color: var(--gold);
+}
+@media (max-width: 992px) {
+  .cursor-dot, .cursor-ring { display: none !important; }
+}
+
+/* ============================================
+   PRELOADER
+   ============================================ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preloader-logo {
+  width: clamp(200px, 30vw, 400px);
+  opacity: 0;
+  filter: blur(36px);
+}
+
+/* ============================================
+   SCROLL PROGRESS BAR
+   ============================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  z-index: 10001;
+  transition: none;
+}
+
+/* ============================================
+   NAV
+   ============================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(24px, 4vw, 60px);
+  background: transparent;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+.nav.scrolled {
+  background: rgba(8, 8, 8, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+  position: relative;
+  z-index: 101;
+  will-change: transform;
+  opacity: 0;
+}
+
+.nav-logo img {
+  height: 32px;
+  width: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-item a {
+  display: block;
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--cream-muted);
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.nav-item a:hover {
+  color: var(--cream);
+}
+
+.nav-item a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--gold);
+  transition: width 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.nav-item a:hover::after,
+.nav-item a.active::after {
+  width: 100%;
+}
+
+/* Hamburger */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  z-index: 101;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--cream);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+.nav-hamburger.active span:nth-child(2) { opacity: 0; }
+.nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+/* Mobile menu */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(8, 8, 8, 0.97);
+  backdrop-filter: blur(30px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.mobile-menu.open {
+  display: flex;
+}
+
+.mobile-menu a {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+}
+
+/* ============================================
+   HERO — Zoom-Through
+   ============================================ */
+.hero-scroll-area {
+  position: relative;
+  height: 300vh;
+}
+
+.hero-wrap {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.28);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, transparent 0%, rgba(8,8,8,0.4) 50%, rgba(8,8,8,0.85) 100%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+  padding: 0 clamp(24px, 5vw, 80px);
+  opacity: 0;
+}
+
+.hero-title-row {
+  width: 100%;
+  overflow: hidden;
+}
+
+.hero-left {
+  text-align: left;
+  will-change: transform;
+}
+
+.hero-right {
+  text-align: right;
+  will-change: transform;
+}
+
+.hero-title-row h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-weight: 800;
+  color: var(--cream);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.hero-title-row h1 .accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+  text-transform: none;
+}
+
+.hero-tagline {
+  margin-top: 28px;
+  text-align: center;
+  max-width: 650px;
+}
+
+.hero-tagline p {
+  font-family: var(--font-heading);
+  font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+  font-weight: 400;
+  color: var(--cream-muted);
+  opacity: 0.8;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+
+.hero-bottom {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 3;
+  opacity: 0;
+}
+
+.hero-bottom span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cream-muted);
+  opacity: 0.7;
+}
+
+.scroll-indicator {
+  width: 20px;
+  height: 32px;
+  border: 1.5px solid var(--text-muted);
+  border-radius: 10px;
+  position: relative;
+}
+
+.scroll-indicator::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 3px;
+  animation: scrollDot 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollDot {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  50% { transform: translateX(-50%) translateY(12px); opacity: 0.3; }
+}
+
+/* ============================================
+   HERO FADE (end of zoom scroll)
+   ============================================ */
+.hero-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ============================================
+   HERO TRANSITION (inside hero-wrap)
+   ============================================ */
+.hero-transition-inner {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-transition-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.15) 0%, rgba(201, 168, 76, 0.04) 40%, transparent 70%);
+  pointer-events: none;
+  filter: blur(40px);
+}
+
+.hero-transition-text {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.hero-transition-text p {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 3.5rem);
+  font-weight: 600;
+  color: var(--cream);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  filter: blur(20px);
+}
+
+.hero-transition-text em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* ============================================
+   GOLD TICKER
+   ============================================ */
+.ticker {
+  overflow: hidden;
+  background: var(--gold);
+  padding: 14px 0;
+  white-space: nowrap;
+}
+
+.ticker-track {
+  display: flex;
+  animation: tickerScroll 30s linear infinite;
+}
+
+.ticker-item {
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  font-weight: 700;
+  color: var(--bg);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 40px;
+}
+
+.ticker-item::after {
+  content: '\2014';
+  margin-left: 40px;
+  opacity: 0.4;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============================================
+   ABOUT — Highlight Text
+   ============================================ */
+.about-highlight {
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+}
+
+.about-highlight .highlight-text {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3.5vw, 3.2rem);
+  font-weight: 600;
+  color: var(--cream);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  max-width: 900px;
+  text-align: center;
+}
+
+/* .char opacity set by GSAP initHighlightText() */
+
+/* ============================================
+   ABOUT GRID
+   ============================================ */
+.about-grid {
+  background: var(--bg-warm);
+}
+
+.about-grid-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 100px);
+  align-items: center;
+}
+
+.about-img-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.about-img-wrap img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  aspect-ratio: 3/4;
+}
+
+.about-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  pointer-events: none;
+}
+
+.about-text h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+
+.about-text h2 .accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+
+.about-text p {
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+.values-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.value-item {
+  padding-left: 20px;
+  border-left: 2px solid var(--gold);
+}
+
+[data-value-expand] {
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+[data-value-expand]:hover {
+  border-color: var(--gold);
+}
+
+.value-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.value-item h4 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.value-chevron {
+  color: var(--text-muted);
+  transition: transform 0.3s ease, color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.value-item.expanded .value-chevron {
+  transform: rotate(180deg);
+  color: var(--gold);
+}
+
+.value-item p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.value-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.value-item.expanded .value-expand {
+  max-height: 300px;
+}
+
+.value-expand-inner {
+  padding-top: 12px;
+}
+
+.value-expand-inner p {
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+/* ============================================
+   CONTENT SHOWCASE — Scrolling Screenshots
+   ============================================ */
+.content-showcase {
+  overflow: hidden;
+  padding: clamp(40px, 5vw, 60px) 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.content-showcase-track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  animation: showcaseScroll 45s linear infinite;
+}
+
+.content-showcase-track.reverse {
+  animation: showcaseScrollReverse 50s linear infinite;
+}
+
+.content-showcase-track img {
+  width: clamp(180px, 20vw, 260px);
+  height: auto;
+  border-radius: 12px;
+  flex-shrink: 0;
+  object-fit: cover;
+  opacity: 0.7;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.content-showcase-track img:hover {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+@keyframes showcaseScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes showcaseScrollReverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+/* ============================================
+   SERVICES — Bento Grid
+   ============================================ */
+.services {
+  background: var(--bg);
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+
+.services-header h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.services-header h2 .accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.bento-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: clamp(28px, 3vw, 40px);
+  overflow: hidden;
+  transition: border-color 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 280px;
+}
+
+.bento-card:hover {
+  border-color: var(--border-hover);
+}
+
+.bento-card.span-2 {
+  grid-column: span 2;
+}
+
+.bento-card.span-3 {
+  grid-column: span 3;
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(201, 168, 76, 0.06) 100%);
+  border-color: var(--border-hover);
+  min-height: 200px;
+}
+
+.bento-number {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  font-family: var(--font-heading);
+  font-size: clamp(5rem, 8vw, 8rem);
+  font-weight: 800;
+  color: var(--border);
+  line-height: 1;
+  transition: color 0.5s ease;
+  pointer-events: none;
+}
+
+.bento-card:hover .bento-number {
+  color: rgba(201, 168, 76, 0.2);
+}
+
+.bento-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bento-content h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.bento-content p {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.bento-cta {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: gap 0.3s ease;
+}
+
+.bento-card:hover .bento-cta {
+  gap: 14px;
+}
+
+.bento-cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.4s ease;
+}
+
+.bento-card.expanded .bento-cta svg {
+  transform: rotate(90deg);
+}
+
+.bento-card.expanded .bento-cta {
+  color: var(--gold-light);
+}
+
+/* Bento Expand Accordion */
+.bento-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento-card.expanded .bento-expand {
+  max-height: 400px;
+}
+
+.bento-expand-inner {
+  padding-top: 20px;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.bento-expand-inner p {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.bento-expand-inner ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bento-expand-inner li {
+  font-size: 0.85rem;
+  color: var(--cream-muted);
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.bento-expand-inner li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+[data-expandable] {
+  cursor: pointer;
+}
+
+/* ============================================
+   PROCESSO
+   ============================================ */
+.process {
+  background: var(--bg-warm);
+}
+
+.process-header {
+  text-align: center;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+
+.process-header h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.process-card {
+  padding: clamp(24px, 2.5vw, 36px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-card);
+  transition: border-color 0.4s ease;
+}
+
+.process-card:hover {
+  border-color: var(--border-hover);
+}
+
+.process-num {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.process-card h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.process-card p {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+[data-process-expand] {
+  cursor: pointer;
+}
+
+.process-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.process-toggle svg {
+  transition: transform 0.3s ease;
+}
+
+.process-card.expanded .process-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* Process Expand */
+.process-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.process-card.expanded .process-expand {
+  max-height: 500px;
+}
+
+.process-chart {
+  padding-top: 20px;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.chart-caption {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 14px;
+  letter-spacing: 0.02em;
+}
+
+/* --- Bar Chart (Analisi) --- */
+.chart-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chart-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chart-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  width: 90px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.chart-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(201, 168, 76, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.chart-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chart-val {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gold);
+  width: 32px;
+  flex-shrink: 0;
+}
+
+/* --- Timeline (Strategia) --- */
+.chart-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.chart-tl-item {
+  position: relative;
+  padding: 8px 0 8px 20px;
+  border-left: 2px solid var(--border);
+}
+
+.chart-tl-item:last-child {
+  border-left-color: transparent;
+}
+
+.chart-tl-item::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 2px solid var(--text-muted);
+  transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.chart-tl-item.lit::before {
+  border-color: var(--gold);
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(201, 168, 76, 0.5);
+}
+
+.chart-tl-week {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.chart-tl-label {
+  font-size: 0.8rem;
+  color: var(--cream-muted);
+  font-weight: 500;
+}
+
+.chart-tl-item.lit .chart-tl-label {
+  color: var(--cream);
+}
+
+/* --- Donut Charts (Esecuzione) --- */
+.chart-donuts {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+}
+
+.chart-donut-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-donut-svg {
+  width: 72px;
+  height: 72px;
+}
+
+.donut-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cream);
+  text-align: center;
+  line-height: 1;
+}
+
+.donut-label small {
+  display: block;
+  font-size: 0.5rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* --- Growth Line (Ottimizzazione) --- */
+.chart-growth {
+  position: relative;
+}
+
+.chart-growth-svg {
+  width: 100%;
+  height: 80px;
+}
+
+.chart-growth-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.chart-growth-labels span {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
+   STATS — Dashboard Cards
+   ============================================ */
+.stats {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 28px);
+}
+
+/* ---- Card ---- */
+.stat-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: clamp(28px, 3vw, 40px);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  /* Hidden until reveal */
+  opacity: 0;
+  transform: translateY(60px) rotateX(8deg);
+}
+
+.stat-card.revealed {
+  opacity: 1;
+  transform: translateY(0) rotateX(0);
+}
+
+.stat-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 8px 40px rgba(201, 168, 76, 0.08), 0 0 0 1px rgba(201, 168, 76, 0.06);
+}
+
+/* Cursor glow follower inside card */
+.stat-card-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.stat-card:hover .stat-card-glow {
+  opacity: 1;
+}
+
+/* ---- Visualization area ---- */
+.stat-viz {
+  position: relative;
+  height: 110px;
+  margin-bottom: 24px;
+  z-index: 1;
+  perspective: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- 3D DONUT CHART (5000+) ---- */
+.stat-donut-3d {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.stat-donut-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.stat-donut-track {
+  fill: none;
+  stroke: rgba(201,168,76,0.08);
+  stroke-width: 6;
+}
+
+.stat-donut-seg {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 0 251.33;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgba(201,168,76,0.3));
+  transition: stroke-dasharray 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+.stat-donut-seg.animated {
+  opacity: 1;
+}
+
+.stat-donut-seg--1 { stroke: var(--gold); }
+.stat-donut-seg--2 { stroke: var(--gold-light); }
+.stat-donut-seg--3 { stroke: rgba(201,168,76,0.5); }
+.stat-donut-seg--4 { stroke: rgba(226,200,120,0.35); }
+
+.stat-donut-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.8s;
+}
+
+.stat-donut-center-text.visible {
+  opacity: 1;
+}
+
+/* ---- 3D NETWORK CONSTELLATION (400+) ---- */
+.stat-constellation {
+  width: 120px;
+  height: 100px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.stat-orbit-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(201,168,76,0.6), 0 0 4px rgba(201,168,76,0.8);
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  opacity: 0;
+}
+
+.stat-orbit-dot::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: dotPulse3d 2s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+@keyframes dotPulse3d {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(2.2); opacity: 0; }
+}
+
+.stat-orbit-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.15);
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.stat-orbit-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.35), transparent);
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  opacity: 0;
+}
+
+/* ---- 3D GAUGE RING (100%) ---- */
+.stat-ring-3d {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.stat-ring-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(201,168,76,0.1);
+  transform-style: preserve-3d;
+}
+
+.stat-ring-svg {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  transform-style: preserve-3d;
+}
+
+.stat-ring-bg {
+  fill: none;
+  stroke: rgba(201,168,76,0.08);
+  stroke-width: 4;
+}
+
+.stat-ring-fill {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  filter: drop-shadow(0 0 8px rgba(201,168,76,0.5));
+}
+
+.stat-ring-glow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 16px rgba(201,168,76,0.8), 0 0 6px rgba(201,168,76,1);
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.stat-ring-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.stat-ring-particles {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.stat-ring-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  opacity: 0;
+}
+
+/* ---- Odometer number ---- */
+.stat-odometer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 12px;
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.stat-digit-wrap {
+  display: inline-block;
+  height: 1.15em;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-digit-inner {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0s;
+}
+
+.stat-digit-inner.animated {
+  transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stat-digit-char {
+  display: block;
+  height: 1.15em;
+  line-height: 1.15;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+  color: var(--cream);
+  text-align: center;
+  min-width: 0.62em;
+}
+
+.stat-suffix {
+  font-size: 0.7em;
+  color: var(--gold);
+  line-height: 1.15;
+  margin-left: 2px;
+  align-self: center;
+}
+
+/* ---- Progress bar ---- */
+.stat-progress {
+  width: 100%;
+  height: 3px;
+  background: rgba(201, 168, 76, 0.08);
+  border-radius: 3px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.stat-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  border-radius: 3px;
+  transition: width 0s;
+}
+
+.stat-progress-fill.animated {
+  transition: width 2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---- Label ---- */
+.stat-label {
+  font-size: clamp(0.78rem, 0.9vw, 0.88rem);
+  color: var(--text);
+  margin-top: 16px;
+  line-height: 1.5;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Tag ---- */
+.stat-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Stat Expand Accordion ---- */
+.stat-card[data-stat-expand] {
+  cursor: pointer;
+}
+
+.stat-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  position: relative;
+  z-index: 1;
+  transition: gap 0.3s ease;
+}
+
+.stat-card:hover .stat-toggle {
+  gap: 10px;
+}
+
+.stat-toggle svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.stat-card.expanded .stat-toggle svg {
+  transform: rotate(180deg);
+}
+
+.stat-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.stat-card.expanded .stat-expand {
+  max-height: 500px;
+}
+
+.stat-expand-inner {
+  padding-top: 20px;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.stat-expand-inner h4 {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.stat-expand-inner p {
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.stat-expand-inner ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-expand-inner li {
+  font-size: 0.82rem;
+  color: var(--cream-muted);
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.stat-expand-inner li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+/* Stat detail highlight number */
+.stat-detail-num {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin-right: 4px;
+}
+
+/* ============================================
+   CONTACT
+   ============================================ */
+.contact {
+  background: var(--bg-warm);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 100px);
+  align-items: center;
+}
+
+.contact-info {
+  position: sticky;
+  top: 120px;
+}
+
+.contact-info h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.contact-info h2 .accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+
+.contact-info > p {
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 36px;
+}
+
+.contact-detail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.contact-detail svg {
+  width: 20px;
+  height: 20px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Contact CTA Cards */
+.contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-cta-card {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 2.5vw, 32px);
+  padding: clamp(24px, 3vw, 36px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: border-color 0.4s ease, transform 0.3s ease;
+}
+
+.contact-cta-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+
+.contact-cta-icon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid var(--border);
+}
+
+.contact-cta-icon svg {
+  width: 26px;
+  height: 26px;
+  color: var(--gold);
+}
+
+.contact-cta-text {
+  flex: 1;
+}
+
+.contact-cta-text h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 1.4vw, 1.35rem);
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.contact-cta-text p {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.contact-cta-arrow {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--text-muted);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-cta-card:hover .contact-cta-arrow {
+  color: var(--gold);
+  transform: translateX(4px);
+}
+
+/* ============================================
+   CAROUSEL (infinite loop)
+   ============================================ */
+.carousel {
+  overflow: hidden;
+  padding: clamp(40px, 5vw, 60px) 0;
+  padding-bottom: clamp(80px, 8vw, 120px);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.carousel-track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+}
+
+.carousel-item {
+  flex-shrink: 0;
+  padding: 0 clamp(24px, 3vw, 48px);
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 4rem);
+  font-weight: 700;
+  color: var(--cream);
+  opacity: 0.12;
+  white-space: nowrap;
+  letter-spacing: -0.03em;
+  transition: opacity 0.5s ease;
+}
+
+.carousel-item:hover {
+  opacity: 0.4;
+}
+
+.carousel-sep {
+  flex-shrink: 0;
+  color: var(--gold);
+  opacity: 0.3;
+  padding: 0 8px;
+  font-size: clamp(1.8rem, 4vw, 4rem);
+}
+
+/* ============================================
+   CTA FIXED BAR
+   ============================================ */
+.cta-bar {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 98;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.cta-bar.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  box-shadow:
+    0 4px 20px rgba(201, 168, 76, 0.3),
+    0 8px 40px rgba(201, 168, 76, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.cta-btn-text {
+  display: inline-flex;
+  overflow: hidden;
+  position: relative;
+  height: 1.1em;
+}
+
+.cta-btn-text .cta-char {
+  display: inline-block;
+  position: relative;
+}
+
+.cta-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.cta-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: clamp(40px, 5vw, 60px) clamp(24px, 5vw, 80px);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo img {
+  height: 24px;
+  width: auto;
+  opacity: 0.5;
+}
+
+.footer-center {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: var(--gold);
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE (<992px)
+   ============================================ */
+@media (max-width: 992px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+
+  /* ---- HERO — scroll-driven zoom (same as desktop, tuned) ---- */
+  .hero-scroll-area {
+    height: 250vh;
+  }
+
+  .hero-wrap {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .hero-bg img {
+    transform: scale(1.2);
+    object-position: center 40%;
+  }
+
+  .hero-overlay {
+    background: radial-gradient(ellipse 80% 70% at 50% 48%, transparent 0%, rgba(8,8,8,0.45) 35%, rgba(8,8,8,0.92) 100%);
+  }
+
+  .hero-content {
+    padding: 0 24px;
+  }
+
+  .hero-title-row h1 {
+    font-size: clamp(2.4rem, 11vw, 3.6rem);
+    text-align: center !important;
+  }
+
+  .hero-left, .hero-right {
+    text-align: center;
+  }
+
+  .hero-tagline {
+    margin-top: 18px;
+    max-width: 100%;
+  }
+
+  .hero-tagline p {
+    font-size: clamp(0.78rem, 3.2vw, 0.88rem);
+    line-height: 1.7;
+  }
+
+  .hero-bottom {
+    bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  }
+
+  .hero-bottom span {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero-transition-text p {
+    font-size: clamp(1rem, 4.5vw, 1.3rem);
+  }
+
+  /* ---- Content showcase ---- */
+  .content-showcase-track img {
+    width: clamp(120px, 30vw, 180px);
+    border-radius: 8px;
+  }
+
+  /* ---- Process charts ---- */
+  .chart-label {
+    width: 70px;
+    font-size: 0.6rem;
+  }
+
+  .chart-donuts {
+    gap: 8px;
+  }
+
+  .chart-donut-svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  .donut-label {
+    font-size: 0.85rem;
+  }
+
+  /* ---- Contact CTA cards ---- */
+  .contact-cta-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 28px 24px;
+    gap: 16px;
+  }
+
+  .contact-cta-arrow {
+    display: none;
+  }
+
+  /* ---- About grid ---- */
+  .about-grid-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .about-img-wrap img {
+    aspect-ratio: 4/3;
+  }
+
+  .about-text p {
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+
+  .value-item {
+    padding-left: 16px;
+  }
+
+  .value-item h4 {
+    font-size: 0.95rem;
+  }
+
+  /* ---- Bento services ---- */
+  .bento-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .bento-card.span-2,
+  .bento-card.span-3 {
+    grid-column: span 1;
+  }
+
+  .bento-card {
+    min-height: auto;
+    padding: 28px 24px;
+  }
+
+  .bento-number {
+    font-size: clamp(4rem, 18vw, 6rem);
+  }
+
+  .bento-content h3 {
+    font-size: 1.15rem;
+  }
+
+  .bento-content p {
+    font-size: 0.85rem;
+  }
+
+  /* ---- Process ---- */
+  .process-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .process-card {
+    padding: 20px;
+  }
+
+  .process-num {
+    font-size: clamp(2rem, 8vw, 3rem);
+    margin-bottom: 12px;
+  }
+
+  .process-card h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .process-card > p {
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .process-toggle {
+    font-size: 0.7rem;
+    margin-top: 12px;
+  }
+
+  /* ---- Stats dashboard ---- */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .stat-card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .stat-viz {
+    height: 80px;
+    margin-bottom: 20px;
+    perspective: 400px;
+  }
+
+  .stat-ring-3d {
+    width: 80px;
+    height: 80px;
+  }
+
+  .stat-constellation {
+    width: 100px;
+    height: 80px;
+  }
+
+  .stat-odometer {
+    font-size: clamp(2.2rem, 10vw, 3rem);
+  }
+
+  .stat-card-glow {
+    display: none;
+  }
+
+  .stat-tag {
+    font-size: 0.6rem;
+    margin-bottom: 12px;
+  }
+
+  .stat-toggle {
+    font-size: 0.68rem;
+    margin-top: 12px;
+  }
+
+  .stat-expand-inner h4 {
+    font-size: 0.88rem;
+  }
+
+  .stat-expand-inner p,
+  .stat-expand-inner li {
+    font-size: 0.78rem;
+  }
+
+  .stat-detail-num {
+    font-size: 1rem;
+  }
+
+  /* ---- Contact ---- */
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .contact-info {
+    position: relative;
+    top: auto;
+  }
+
+  .contact-info > p {
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+
+  .contact-detail {
+    font-size: 0.85rem;
+  }
+
+  /* ---- Carousel ---- */
+  .carousel {
+    padding-bottom: clamp(60px, 6vw, 80px);
+  }
+
+  .carousel-item {
+    font-size: clamp(1.4rem, 5vw, 2.4rem);
+    padding: 0 clamp(16px, 2.5vw, 32px);
+  }
+
+  .carousel-sep {
+    font-size: clamp(1.4rem, 5vw, 2.4rem);
+  }
+
+  /* ---- Footer ---- */
+  .footer-inner {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .footer {
+    padding-bottom: 100px;
+  }
+
+  /* ---- CTA bar ---- */
+  .cta-bar {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+  }
+
+  .cta-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 0.85rem;
+  }
+
+  /* ---- Section padding ---- */
+  .section-pad {
+    padding: clamp(60px, 8vw, 100px) clamp(20px, 5vw, 40px);
+  }
+
+  /* ---- About highlight ---- */
+  .about-highlight {
+    min-height: 50vh;
+  }
+
+  .about-highlight .highlight-text {
+    font-size: clamp(1.3rem, 5.5vw, 2rem);
+  }
+
+  /* ---- Ticker ---- */
+  .ticker {
+    padding: 10px 0;
+  }
+
+  .ticker-item {
+    font-size: 0.7rem;
+    padding: 0 20px;
+  }
+
+  .ticker-item::after {
+    margin-left: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-title-row h1 {
+    font-size: clamp(2rem, 13vw, 3rem);
+  }
+
+  .about-highlight .highlight-text {
+    font-size: clamp(1.15rem, 5.5vw, 1.6rem);
+  }
+
+  .about-text h2 {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+
+  .services-header h2,
+  .process-header h2,
+  .contact-info h2 {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+
+  .bento-card {
+    padding: 22px 20px;
+    min-height: auto;
+  }
+
+  .bento-number {
+    font-size: clamp(3.5rem, 16vw, 5rem);
+    right: 12px;
+  }
+
+  .stat-odometer {
+    font-size: clamp(1.8rem, 9vw, 2.4rem);
+  }
+
+  .stat-viz {
+    height: 65px;
+    margin-bottom: 16px;
+    perspective: 300px;
+  }
+
+  .stat-ring-3d {
+    width: 65px;
+    height: 65px;
+  }
+
+  .stat-constellation {
+    width: 80px;
+    height: 65px;
+  }
+
+  .contact-cta-card {
+    padding: 20px 16px;
+  }
+
+  .contact-cta-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .contact-cta-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .contact-cta-text h3 {
+    font-size: 1rem;
+  }
+
+  .contact-cta-text p {
+    font-size: 0.8rem;
+  }
+
+  .content-showcase-track img {
+    width: clamp(100px, 28vw, 150px);
+    border-radius: 6px;
+  }
+
+  .content-showcase {
+    gap: 10px;
+    padding: 30px 0;
+  }
+
+  .value-expand-inner p {
+    font-size: 0.78rem;
+  }
+
+  .bento-expand-inner p,
+  .bento-expand-inner li {
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================
+   UTILITY ANIMATIONS
+   — Initial state set by GSAP, not CSS,
+     to avoid conflict with gsap.from()
+   ============================================ */
+
+</style>
+</head>
+<body class="locked">
+
+<!-- Film Grain -->
+<div class="grain"></div>
+
+<!-- Scroll Progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Preloader -->
+<div class="preloader" id="preloader">
+  <img class="preloader-logo" src="logo-preloader.png" alt="Adam Marra">
+</div>
+
+<!-- Nav -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo" id="navLogo">
+    <img src="logo-preloader.png" alt="Adam Marra">
+  </a>
+  <ul class="nav-links">
+    <li class="nav-item"><a href="#about" class="nav-link">Chi Sono</a></li>
+    <li class="nav-item"><a href="#services" class="nav-link">Servizi</a></li>
+    <li class="nav-item"><a href="#process" class="nav-link">Processo</a></li>
+    <li class="nav-item"><a href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" class="nav-link">Contattami</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" class="mobile-link">Chi Sono</a>
+  <a href="#services" class="mobile-link">Servizi</a>
+  <a href="#process" class="mobile-link">Processo</a>
+  <a href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" class="mobile-link">Contattami</a>
+</div>
+
+<!-- ========== HERO — Zoom-Through ========== -->
+<section class="hero-scroll-area" id="heroArea">
+  <div class="hero-wrap">
+    <div class="hero-bg" id="heroBg">
+      <img src="hero-portal.png" alt="Golden Portal">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-fade" id="heroFade"></div>
+    <div class="hero-content" id="heroContent">
+      <div class="hero-title-row hero-left" id="heroLeft">
+        <h1>Content <span class="accent">Marketing</span></h1>
+      </div>
+      <div class="hero-title-row hero-right" id="heroRight">
+        <h1>che <span class="accent">Converte</span></h1>
+      </div>
+      <div class="hero-tagline" id="heroTagline">
+        <p>Strategia, contenuti e gestione per costruire</p>
+        <p>un personal brand che genera autorità,</p>
+        <p>fiducia e vendite.</p>
+      </div>
+    </div>
+    <div class="hero-bottom" id="heroBottom">
+      <span>Scorri per scoprire</span>
+      <div class="scroll-indicator"></div>
+    </div>
+    <!-- Transition content inside hero-wrap -->
+    <div class="hero-transition-inner" id="heroTransInner">
+      <div class="hero-transition-glow"></div>
+      <div class="hero-transition-text" id="heroTransText">
+        <p>Il tuo brand merita una strategia</p>
+        <p>che lavori <em>per te</em>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== GOLD TICKER ========== -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">Content Marketing</span>
+    <span class="ticker-item">Personal Brand</span>
+    <span class="ticker-item">Strategia</span>
+    <span class="ticker-item">Funnel</span>
+    <span class="ticker-item">Adam Marra</span>
+    <span class="ticker-item">Consulenza 1:1</span>
+    <span class="ticker-item">Crescita Organica</span>
+    <span class="ticker-item">Content Marketing</span>
+    <span class="ticker-item">Personal Brand</span>
+    <span class="ticker-item">Strategia</span>
+    <span class="ticker-item">Funnel</span>
+    <span class="ticker-item">Adam Marra</span>
+    <span class="ticker-item">Consulenza 1:1</span>
+    <span class="ticker-item">Crescita Organica</span>
+  </div>
+</div>
+
+<!-- ========== ABOUT — Char Highlight ========== -->
+<section class="about-highlight section-pad" id="about">
+  <p class="highlight-text" data-highlight-text>Sono Adam Marra, il tuo partner per costruire un personal brand che genera autorità, fiducia e vendite. Strategia, contenuti e gestione; un percorso 1:1 costruito su di te.</p>
+</section>
+
+<!-- ========== ABOUT GRID ========== -->
+<section class="about-grid section-pad">
+  <div class="about-grid-inner">
+    <div class="about-img-wrap" data-div-reveal>
+      <img src="adam-portrait.png" alt="Adam Marra">
+    </div>
+    <div class="about-text" data-line-reveal>
+      <h2>Costruiamo il tuo <span class="accent">brand</span> insieme</h2>
+      <p>Non sono un'agenzia generica. Lavoro in prima persona con te per creare una strategia di contenuti che rifletta chi sei davvero e attiri i clienti giusti. Ogni percorso è unico, pensato per le tue esigenze specifiche e i tuoi obiettivi di crescita.</p>
+      <div class="values-list">
+        <div class="value-item" data-value-expand>
+          <div class="value-header">
+            <h4>Chiarezza</h4>
+            <svg class="value-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <p>Niente fumo, solo strategie concrete con risultati misurabili.</p>
+          <div class="value-expand">
+            <div class="value-expand-inner">
+              <p>Ogni decisione è supportata da dati reali. Ricevi report chiari con metriche che contano: reach, engagement, conversioni, ROI. Sai sempre esattamente cosa sta funzionando, cosa no, e perché. Zero tecnicismi inutili. Solo informazioni che puoi usare per prendere decisioni migliori.</p>
+            </div>
+          </div>
+        </div>
+        <div class="value-item" data-value-expand>
+          <div class="value-header">
+            <h4>Partnership</h4>
+            <svg class="value-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <p>Un percorso 1:1 dove lavoriamo fianco a fianco per la tua crescita.</p>
+          <div class="value-expand">
+            <div class="value-expand-inner">
+              <p>Non delego a junior o freelance esterni. Lavoro personalmente su ogni progetto con call settimanali, revisioni in tempo reale e un canale diretto sempre aperto. Il tuo brand è la mia priorità. Come se fosse il mio. Costruiamo insieme, non eseguo ordini.</p>
+            </div>
+          </div>
+        </div>
+        <div class="value-item" data-value-expand>
+          <div class="value-header">
+            <h4>Precisione</h4>
+            <svg class="value-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <p>Ogni contenuto è studiato per costruire autorità e generare conversioni.</p>
+          <div class="value-expand">
+            <div class="value-expand-inner">
+              <p>Niente post "tanto per pubblicare". Ogni singolo contenuto ha un obiettivo preciso nella strategia complessiva: attirare, educare, convertire o fidelizzare. Dalla caption al visual, dal timing all'hashtag. Tutto è calibrato per massimizzare l'impatto sul tuo pubblico specifico.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTENT SHOWCASE — Scrolling Screenshots ========== -->
+<section class="content-showcase">
+  <div class="content-showcase-track" id="contentTrack1">
+    <img src="93. la chiave più importante.png" alt="Content" loading="lazy">
+    <img src="94. strumenti utili.png" alt="Content" loading="lazy">
+    <img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="Content" loading="lazy">
+    <img src="97. LO SAI CHE IL FATTURATO.png" alt="Content" loading="lazy">
+    <img src="106. il tuo servizio è impeccabile 2.png" alt="Content" loading="lazy">
+    <img src="93. la chiave più importante.png" alt="Content" loading="lazy">
+    <img src="94. strumenti utili.png" alt="Content" loading="lazy">
+    <img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="Content" loading="lazy">
+    <img src="97. LO SAI CHE IL FATTURATO.png" alt="Content" loading="lazy">
+    <img src="106. il tuo servizio è impeccabile 2.png" alt="Content" loading="lazy">
+  </div>
+  <div class="content-showcase-track reverse" id="contentTrack2">
+    <img src="107. adam posso farlo 2.png" alt="Content" loading="lazy">
+    <img src="108. le tue ads non performano 2.png" alt="Content" loading="lazy">
+    <img src="109. adam voglio pubblicare 2.png" alt="Content" loading="lazy">
+    <img src="110. le ads non performano 2.png" alt="Content" loading="lazy">
+    <img src="111. un corso 2.png" alt="Content" loading="lazy">
+    <img src="107. adam posso farlo 2.png" alt="Content" loading="lazy">
+    <img src="108. le tue ads non performano 2.png" alt="Content" loading="lazy">
+    <img src="109. adam voglio pubblicare 2.png" alt="Content" loading="lazy">
+    <img src="110. le ads non performano 2.png" alt="Content" loading="lazy">
+    <img src="111. un corso 2.png" alt="Content" loading="lazy">
+  </div>
+</section>
+
+<!-- ========== SERVIZI — Bento Grid ========== -->
+<section class="services section-pad" id="services">
+  <div class="services-header" data-line-reveal>
+    <h2>Tutto ciò che serve<br>al tuo <span class="accent">brand</span></h2>
+  </div>
+  <div class="bento-grid" data-div-reveal>
+    <div class="bento-card span-2" data-expandable>
+      <span class="bento-number">01</span>
+      <div class="bento-content">
+        <h3>Content Strategy</h3>
+        <p>Piano editoriale completo con pillar content, calendario pubblicazioni e tone of voice calibrato sul tuo brand.</p>
+        <span class="bento-cta">Scopri di più <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+      <div class="bento-expand">
+        <div class="bento-expand-inner">
+          <p>Dall'analisi del mercato alla creazione di una narrativa coerente che attira il tuo pubblico ideale. Include:</p>
+          <ul>
+            <li>Audit completo della comunicazione attuale</li>
+            <li>Definizione dei pillar content e topic cluster</li>
+            <li>Calendario editoriale mensile con copy pronti</li>
+            <li>Tone of voice guide personalizzata</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="bento-card" data-expandable>
+      <span class="bento-number">02</span>
+      <div class="bento-content">
+        <h3>Funnel di Vendita</h3>
+        <p>Costruzione di funnel completi che trasformano follower in clienti paganti.</p>
+        <span class="bento-cta">Scopri di più <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+      <div class="bento-expand">
+        <div class="bento-expand-inner">
+          <p>Sequenze strategiche di contenuti pensate per ogni fase del percorso d'acquisto:</p>
+          <ul>
+            <li>Lead magnet e contenuti di acquisizione</li>
+            <li>Sequenze email di nurturing</li>
+            <li>Landing page e pagine di vendita</li>
+            <li>Automazioni e trigger comportamentali</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="bento-card" data-expandable>
+      <span class="bento-number">03</span>
+      <div class="bento-content">
+        <h3>Personal Branding</h3>
+        <p>Definizione dell'identità digitale, posizionamento e differenziazione nel tuo mercato.</p>
+        <span class="bento-cta">Scopri di più <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+      <div class="bento-expand">
+        <div class="bento-expand-inner">
+          <ul>
+            <li>Brand positioning e unique value proposition</li>
+            <li>Visual identity e linee guida grafiche</li>
+            <li>Storytelling e narrativa personale</li>
+            <li>Strategia di differenziazione competitiva</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="bento-card span-2" data-expandable>
+      <span class="bento-number">04</span>
+      <div class="bento-content">
+        <h3>Social Media Management</h3>
+        <p>Gestione completa dei tuoi profili con copy, creatività e scheduling ottimizzato.</p>
+        <span class="bento-cta">Scopri di più <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+      <div class="bento-expand">
+        <div class="bento-expand-inner">
+          <ul>
+            <li>Creazione contenuti (copy + brief creativi)</li>
+            <li>Scheduling e pubblicazione ottimizzata</li>
+            <li>Community management e engagement</li>
+            <li>Report mensili con KPI e insights</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="bento-card span-3" data-expandable>
+      <span class="bento-number">05</span>
+      <div class="bento-content">
+        <h3>Consulenza 1:1</h3>
+        <p>Sessioni strategiche personalizzate dove analizziamo il tuo business e costruiamo un piano d'azione su misura.</p>
+        <span class="bento-cta">Prenota una call <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+      <div class="bento-expand">
+        <div class="bento-expand-inner">
+          <p>Un percorso intensivo per chi vuole risultati concreti:</p>
+          <ul>
+            <li>Analisi approfondita del tuo business e mercato</li>
+            <li>Identificazione opportunità di crescita immediate</li>
+            <li>Piano d'azione personalizzato con timeline</li>
+            <li>Follow-up e supporto nell'implementazione</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROCESSO ========== -->
+<section class="process section-pad" id="process">
+  <div class="process-header" data-line-reveal>
+    <h2>Il Percorso in<br><span class="accent" style="font-family:var(--font-accent);font-style:italic;font-weight:400;color:var(--gold);">4 Step</span></h2>
+  </div>
+  <div class="process-grid" data-div-reveal>
+    <div class="process-card" data-process-expand>
+      <div class="process-num">01</div>
+      <h3>Analisi</h3>
+      <p>Studio approfondito del tuo brand, mercato, competitor e pubblico target. Mappiamo i punti di forza e le opportunità.</p>
+      <span class="process-toggle">Vedi metriche <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
+      <div class="process-expand">
+        <div class="process-chart" id="chartAnalisi">
+          <div class="chart-bars">
+            <div class="chart-bar-row"><span class="chart-label">Presenza Social</span><div class="chart-bar-track"><div class="chart-bar-fill" data-width="35"></div></div><span class="chart-val">35%</span></div>
+            <div class="chart-bar-row"><span class="chart-label">SEO</span><div class="chart-bar-track"><div class="chart-bar-fill" data-width="20"></div></div><span class="chart-val">20%</span></div>
+            <div class="chart-bar-row"><span class="chart-label">Content Quality</span><div class="chart-bar-track"><div class="chart-bar-fill" data-width="45"></div></div><span class="chart-val">45%</span></div>
+            <div class="chart-bar-row"><span class="chart-label">Engagement</span><div class="chart-bar-track"><div class="chart-bar-fill" data-width="28"></div></div><span class="chart-val">28%</span></div>
+            <div class="chart-bar-row"><span class="chart-label">Brand Awareness</span><div class="chart-bar-track"><div class="chart-bar-fill" data-width="15"></div></div><span class="chart-val">15%</span></div>
+          </div>
+          <div class="chart-caption">Audit iniziale. Situazione media pre-consulenza</div>
+        </div>
+      </div>
+    </div>
+    <div class="process-card" data-process-expand>
+      <div class="process-num">02</div>
+      <h3>Strategia</h3>
+      <p>Definiamo il piano d'azione: posizionamento, contenuti, canali e timeline. Ogni mossa è calcolata.</p>
+      <span class="process-toggle">Vedi roadmap <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
+      <div class="process-expand">
+        <div class="process-chart" id="chartStrategia">
+          <div class="chart-timeline">
+            <div class="chart-tl-item active"><span class="chart-tl-week">Sett. 1-2</span><span class="chart-tl-label">Ricerca &amp; Audit</span></div>
+            <div class="chart-tl-item active"><span class="chart-tl-week">Sett. 3</span><span class="chart-tl-label">Positioning</span></div>
+            <div class="chart-tl-item"><span class="chart-tl-week">Sett. 4</span><span class="chart-tl-label">Piano Editoriale</span></div>
+            <div class="chart-tl-item"><span class="chart-tl-week">Sett. 5-6</span><span class="chart-tl-label">Funnel Setup</span></div>
+            <div class="chart-tl-item"><span class="chart-tl-week">Sett. 7+</span><span class="chart-tl-label">Go Live</span></div>
+          </div>
+          <div class="chart-caption">Timeline tipica. Adattata alle tue esigenze</div>
+        </div>
+      </div>
+    </div>
+    <div class="process-card" data-process-expand>
+      <div class="process-num">03</div>
+      <h3>Esecuzione</h3>
+      <p>Creiamo e pubblichiamo contenuti di alta qualità. Copy, visual, scheduling. Tutto curato nei minimi dettagli.</p>
+      <span class="process-toggle">Vedi output <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
+      <div class="process-expand">
+        <div class="process-chart" id="chartEsecuzione">
+          <div class="chart-donuts">
+            <div class="chart-donut-item">
+              <svg viewBox="0 0 36 36" class="chart-donut-svg">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(201,168,76,0.12)" stroke-width="2.5"/>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="0 100" stroke-linecap="round" class="donut-fill" data-percent="40" transform="rotate(-90 18 18)"/>
+              </svg>
+              <span class="donut-label">40<small>post/mese</small></span>
+            </div>
+            <div class="chart-donut-item">
+              <svg viewBox="0 0 36 36" class="chart-donut-svg">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(201,168,76,0.12)" stroke-width="2.5"/>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--gold-light)" stroke-width="2.5" stroke-dasharray="0 100" stroke-linecap="round" class="donut-fill" data-percent="12" transform="rotate(-90 18 18)"/>
+              </svg>
+              <span class="donut-label">12<small>stories/sett.</small></span>
+            </div>
+            <div class="chart-donut-item">
+              <svg viewBox="0 0 36 36" class="chart-donut-svg">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(201,168,76,0.12)" stroke-width="2.5"/>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--cream)" stroke-width="2.5" stroke-dasharray="0 100" stroke-linecap="round" class="donut-fill" data-percent="4" transform="rotate(-90 18 18)"/>
+              </svg>
+              <span class="donut-label">4<small>reel/mese</small></span>
+            </div>
+          </div>
+          <div class="chart-caption">Output medio mensile per cliente</div>
+        </div>
+      </div>
+    </div>
+    <div class="process-card" data-process-expand>
+      <div class="process-num">04</div>
+      <h3>Ottimizzazione</h3>
+      <p>Monitoriamo i risultati, analizziamo i dati e raffiniamo la strategia per massimizzare performance e ROI.</p>
+      <span class="process-toggle">Vedi crescita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
+      <div class="process-expand">
+        <div class="process-chart" id="chartOttimizzazione">
+          <div class="chart-growth">
+            <svg viewBox="0 0 300 100" class="chart-growth-svg" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="growthGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--gold)" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="var(--gold)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path class="growth-area" d="M0,90 C30,85 60,80 90,70 C120,60 150,55 180,40 C210,28 240,18 270,12 L300,8 L300,100 L0,100 Z" fill="url(#growthGrad)" opacity="0"/>
+              <path class="growth-line" d="M0,90 C30,85 60,80 90,70 C120,60 150,55 180,40 C210,28 240,18 270,12 L300,8" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="500" stroke-dashoffset="500"/>
+            </svg>
+            <div class="chart-growth-labels">
+              <span>Mese 1</span><span>Mese 3</span><span>Mese 6</span><span>Mese 12</span>
+            </div>
+          </div>
+          <div class="chart-caption">Curva di crescita tipica. Engagement &amp; conversioni</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STATS — Dashboard ========== -->
+<section class="stats section-pad">
+  <div class="stats-grid">
+
+    <!-- Card 1: Content Created -->
+    <div class="stat-card" data-stat="5000" data-stat-suffix="+" data-stat-progress="85" data-stat-expand>
+      <div class="stat-card-glow"></div>
+      <span class="stat-tag">Produzione</span>
+      <div class="stat-viz">
+        <div class="stat-donut-3d" id="statDonut3d">
+          <svg class="stat-donut-svg" viewBox="0 0 100 100">
+            <circle class="stat-donut-track" cx="50" cy="50" r="40"/>
+            <circle class="stat-donut-seg stat-donut-seg--1" cx="50" cy="50" r="40" data-pct="56"/>
+            <circle class="stat-donut-seg stat-donut-seg--2" cx="50" cy="50" r="40" data-pct="18"/>
+            <circle class="stat-donut-seg stat-donut-seg--3" cx="50" cy="50" r="40" data-pct="16"/>
+            <circle class="stat-donut-seg stat-donut-seg--4" cx="50" cy="50" r="40" data-pct="10"/>
+          </svg>
+          <div class="stat-donut-center-text">5K+</div>
+        </div>
+      </div>
+      <div class="stat-odometer" id="odo1"></div>
+      <div class="stat-label">Contenuti creati per personal brand</div>
+      <div class="stat-progress"><div class="stat-progress-fill"></div></div>
+      <span class="stat-toggle">Approfondisci <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+      <div class="stat-expand">
+        <div class="stat-expand-inner">
+          <h4>Cosa produciamo</h4>
+          <p>Ogni contenuto è pensato strategicamente per posizionarti come autorità nel tuo settore:</p>
+          <ul>
+            <li><span class="stat-detail-num">2800+</span> post social (carousel, reel, stories)</li>
+            <li><span class="stat-detail-num">900+</span> articoli e blog post SEO-oriented</li>
+            <li><span class="stat-detail-num">800+</span> email di nurturing e newsletter</li>
+            <li><span class="stat-detail-num">500+</span> script video e contenuti multimediali</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Clients -->
+    <div class="stat-card" data-stat="400" data-stat-suffix="+" data-stat-progress="72" data-stat-expand>
+      <div class="stat-card-glow"></div>
+      <span class="stat-tag">Clienti</span>
+      <div class="stat-viz">
+        <div class="stat-constellation" id="statConstellation">
+          <div class="stat-orbit-ring" style="width:100px;height:100px;margin-left:-50px;margin-top:-50px;"></div>
+          <div class="stat-orbit-ring" style="width:60px;height:60px;margin-left:-30px;margin-top:-30px;"></div>
+          <div class="stat-orbit-dot" data-orbit="50" data-speed="8" data-offset="0" data-z="20"></div>
+          <div class="stat-orbit-dot" data-orbit="50" data-speed="8" data-offset="120" data-z="-15"></div>
+          <div class="stat-orbit-dot" data-orbit="50" data-speed="8" data-offset="240" data-z="10"></div>
+          <div class="stat-orbit-dot" data-orbit="30" data-speed="12" data-offset="60" data-z="-20"></div>
+          <div class="stat-orbit-dot" data-orbit="30" data-speed="12" data-offset="200" data-z="25"></div>
+          <div class="stat-orbit-dot" data-orbit="15" data-speed="6" data-offset="0" data-z="0" style="width:10px;height:10px;"></div>
+          <div class="stat-orbit-line"></div>
+          <div class="stat-orbit-line"></div>
+          <div class="stat-orbit-line"></div>
+          <div class="stat-orbit-line"></div>
+          <div class="stat-orbit-line"></div>
+        </div>
+      </div>
+      <div class="stat-odometer" id="odo2"></div>
+      <div class="stat-label">Clienti soddisfatti in tutta Italia</div>
+      <div class="stat-progress"><div class="stat-progress-fill"></div></div>
+      <span class="stat-toggle">Approfondisci <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+      <div class="stat-expand">
+        <div class="stat-expand-inner">
+          <h4>I nostri clienti</h4>
+          <p>Lavoriamo con professionisti e imprenditori in tutta Italia che vogliono costruire un brand personale solido:</p>
+          <ul>
+            <li><span class="stat-detail-num">85%</span> rinnova la collaborazione dopo il primo percorso</li>
+            <li><span class="stat-detail-num">12</span> settori diversi; dal coaching al real estate</li>
+            <li><span class="stat-detail-num">3.2x</span> crescita media dei follower in 6 mesi</li>
+            <li><span class="stat-detail-num">+180%</span> engagement rate medio post-consulenza</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Dedication -->
+    <div class="stat-card" data-stat="100" data-stat-suffix="%" data-stat-progress="100" data-stat-expand>
+      <div class="stat-card-glow"></div>
+      <span class="stat-tag">Dedizione</span>
+      <div class="stat-viz">
+        <div class="stat-ring-3d" id="statRing3d">
+          <div class="stat-ring-track"></div>
+          <svg class="stat-ring-svg" viewBox="0 0 100 100">
+            <circle class="stat-ring-bg" cx="50" cy="50" r="45"/>
+            <circle class="stat-ring-fill" cx="50" cy="50" r="45"/>
+          </svg>
+          <div class="stat-ring-glow"></div>
+          <div class="stat-ring-text">0%</div>
+          <div class="stat-ring-particles">
+            <div class="stat-ring-particle"></div>
+            <div class="stat-ring-particle"></div>
+            <div class="stat-ring-particle"></div>
+            <div class="stat-ring-particle"></div>
+            <div class="stat-ring-particle"></div>
+            <div class="stat-ring-particle"></div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-odometer" id="odo3"></div>
+      <div class="stat-label">Dedizione in ogni progetto</div>
+      <div class="stat-progress"><div class="stat-progress-fill"></div></div>
+      <span class="stat-toggle">Approfondisci <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+      <div class="stat-expand">
+        <div class="stat-expand-inner">
+          <h4>Il nostro approccio</h4>
+          <p>Ogni progetto riceve la massima attenzione. Non gestiamo centinaia di clienti, ma pochi selezionati:</p>
+          <ul>
+            <li>Strategia personalizzata. Mai template o approcci generici</li>
+            <li>Comunicazione diretta 1:1. Niente intermediari o chatbot</li>
+            <li>Report settimanali trasparenti con dati reali</li>
+            <li>Revisioni illimitate fino alla tua piena soddisfazione</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="contact section-pad" id="contact">
+  <div class="contact-grid">
+    <div class="contact-info" data-line-reveal>
+      <h2>Parliamo del<br>tuo <span class="accent">progetto</span></h2>
+      <p>Hai un'idea, un brand da far crescere o vuoi semplicemente capire come iniziare? Scrivimi. La prima consulenza è gratuita. Senza impegno, senza pressioni.</p>
+      <div class="contact-detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <span>info@consultingrevolution.agency</span>
+      </div>
+      <div class="contact-detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span>Italia. Lavoro 100% da remoto</span>
+      </div>
+    </div>
+    <div class="contact-actions" data-div-reveal>
+      <a href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" class="contact-cta-card" data-magnetic>
+        <div class="contact-cta-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div class="contact-cta-text">
+          <h3>Scrivimi su Instagram</h3>
+          <p>Mandami un DM su @adamarraconsulting. Rispondo sempre personalmente.</p>
+        </div>
+        <svg class="contact-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="mailto:info@consultingrevolution.agency" class="contact-cta-card" data-magnetic>
+        <div class="contact-cta-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="contact-cta-text">
+          <h3>Inviami un'Email</h3>
+          <p>info@consultingrevolution.agency. Per richieste dettagliate o collaborazioni.</p>
+        </div>
+        <svg class="contact-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CAROUSEL ========== -->
+<div class="carousel">
+  <div class="carousel-track" id="carouselTrack">
+    <span class="carousel-item">Content Marketing</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Personal Brand</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Funnel di Vendita</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Consulenza 1:1</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Strategia</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Crescita Organica</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Content Marketing</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Personal Brand</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Funnel di Vendita</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Consulenza 1:1</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Strategia</span>
+    <span class="carousel-sep">/</span>
+    <span class="carousel-item">Crescita Organica</span>
+    <span class="carousel-sep">/</span>
+  </div>
+</div>
+
+<!-- ========== CTA FIXED BAR ========== -->
+<div class="cta-bar" id="ctaBar">
+  <a href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" class="cta-btn" data-magnetic-strength="25">
+    <span class="cta-btn-text" id="ctaBtnText">Inizia il Percorso</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <a href="#" class="footer-logo">
+      <img src="logo-preloader.png" alt="Adam Marra">
+    </a>
+    <div class="footer-center">&copy; 2026 Adam Marra. Tutti i diritti riservati.</div>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ============================================
+     JAVASCRIPT — All animations
+     ============================================ -->
+<script>
+(function() {
+  'use strict';
+
+  /* ——————————————————————————————————————————
+     A. Text Splitter (custom wabSplit replacement)
+     —————————————————————————————————————————— */
+  function splitText(el, type) {
+    if (type === 'lines') {
+      var kids = [];
+      for (var i = 0; i < el.children.length; i++) {
+        if (el.children[i].nodeType === 1) kids.push(el.children[i]);
+      }
+      if (kids.length > 0) return { lines: kids, words: [], chars: [] };
+      var span = document.createElement('span');
+      span.className = 'line';
+      while (el.firstChild) span.appendChild(el.firstChild);
+      el.appendChild(span);
+      return { lines: [span], words: [], chars: [] };
+    }
+
+    var chars = [], words = [];
+    function walk(node, parent) {
+      if (node.nodeType === 3) {
+        var text = node.textContent;
+        if (!text) return;
+        var parts = text.split(/(\s+)/);
+        for (var p = 0; p < parts.length; p++) {
+          var part = parts[p];
+          if (!part) continue;
+          if (/^\s+$/.test(part)) {
+            parent.appendChild(document.createTextNode(part));
+            continue;
+          }
+          var wordSpan = document.createElement('span');
+          wordSpan.className = 'word';
+          wordSpan.style.display = 'inline-block';
+          wordSpan.style.whiteSpace = 'nowrap';
+          words.push(wordSpan);
+          if (type === 'chars' || type === 'words,chars') {
+            for (var c = 0; c < part.length; c++) {
+              var charSpan = document.createElement('span');
+              charSpan.className = 'char';
+              charSpan.style.display = 'inline-block';
+              charSpan.textContent = part[c];
+              wordSpan.appendChild(charSpan);
+              chars.push(charSpan);
+            }
+          } else {
+            wordSpan.textContent = part;
+          }
+          parent.appendChild(wordSpan);
+        }
+      } else if (node.nodeType === 1) {
+        var clone = node.cloneNode(false);
+        parent.appendChild(clone);
+        var childNodes = Array.prototype.slice.call(node.childNodes);
+        for (var i = 0; i < childNodes.length; i++) {
+          walk(childNodes[i], clone);
+        }
+      }
+    }
+
+    var nodes = Array.prototype.slice.call(el.childNodes);
+    el.innerHTML = '';
+    for (var n = 0; n < nodes.length; n++) {
+      walk(nodes[n], el);
+    }
+    return { lines: [], words: words, chars: chars };
+  }
+
+
+  /* ——————————————————————————————————————————
+     B. Lenis Smooth Scroll
+     —————————————————————————————————————————— */
+  var lenis;
+  function initLenis() {
+    lenis = new Lenis({
+      duration: 1.2,
+      smoothWheel: true,
+      smoothTouch: false,
+      easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }
+    });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function(time) { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+
+  /* ——————————————————————————————————————————
+     C. Preloader
+     —————————————————————————————————————————— */
+  function initPreloader(onComplete) {
+    window.scrollTo(0, 0);
+    document.body.classList.add('locked');
+
+    var preloader = document.getElementById('preloader');
+    var logo = preloader.querySelector('.preloader-logo');
+    var hasVisited = sessionStorage.getItem('am_visited');
+    var holdDuration = hasVisited ? 0.6 : 1.8;
+    var tl = gsap.timeline({
+      onComplete: function() {
+        gsap.to(preloader, {
+          autoAlpha: 0,
+          duration: 0.6,
+          delay: 0.4,
+          onComplete: function() {
+            document.body.classList.remove('locked');
+            preloader.style.display = 'none';
+            sessionStorage.setItem('am_visited', '1');
+            if (onComplete) onComplete();
+          }
+        });
+      }
+    });
+
+    // Blur in
+    tl.to(logo, {
+      filter: 'blur(0px)',
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out'
+    });
+
+    // Hold
+    tl.to({}, { duration: holdDuration });
+
+    // Blur out
+    tl.to(logo, {
+      filter: 'blur(36px)',
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power2.in'
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     D0. Hero Intro — gentle title reveal
+     —————————————————————————————————————————— */
+  function initHeroIntro() {
+    var content = document.getElementById('heroContent');
+    var bottom = document.getElementById('heroBottom');
+    // CSS starts these at opacity:0, GSAP only animates TO visible — no flash
+    gsap.to(content, { opacity: 1, duration: 1.5, delay: 0.1, ease: 'power2.out' });
+    gsap.to(bottom, { opacity: 1, duration: 1, delay: 1, ease: 'power2.out' });
+  }
+
+
+  /* ——————————————————————————————————————————
+     D. Hero Zoom-Through
+     —————————————————————————————————————————— */
+  function initHeroZoom() {
+    var isMobile = window.innerWidth < 992;
+
+    var area = document.getElementById('heroArea');
+    var bg = document.getElementById('heroBg');
+    var content = document.getElementById('heroContent');
+    var left = document.getElementById('heroLeft');
+    var right = document.getElementById('heroRight');
+    var bottom = document.getElementById('heroBottom');
+
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: area,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        invalidateOnRefresh: true
+      }
+    });
+
+    var fade = document.getElementById('heroFade');
+    var transInner = document.getElementById('heroTransInner');
+    var heroTransTextEl = document.getElementById('heroTransText');
+    var transLines = heroTransTextEl ? heroTransTextEl.querySelectorAll('p') : [];
+
+    // Zoom values tuned per viewport
+    var bgScale = isMobile ? 5 : 6.5;
+    var contentScale = isMobile ? 6 : 8;
+    var splitX = isMobile ? '40vw' : '50vw';
+
+    // Phase 1 (0–0.55): zoom in, split text
+    tl.to(bg, { scale: bgScale, xPercent: -2, ease: 'none', duration: 0.55 }, 0);
+    tl.to(content, { scale: contentScale, ease: 'none', duration: 0.55 }, 0);
+    tl.to(left, { x: '-' + splitX, ease: 'none', duration: 0.55 }, 0);
+    tl.to(right, { x: splitX, ease: 'none', duration: 0.55 }, 0);
+    tl.to(bottom, { autoAlpha: 0, duration: 0.1 }, 0);
+
+    // Phase 2 (0.45–0.65): fade portal to black
+    tl.to(fade, { opacity: 1, ease: 'power2.in', duration: 0.2 }, 0.45);
+
+    // Phase 3 (0.55–0.85): transition text appears over black
+    tl.to(transInner, { opacity: 1, duration: 0.15 }, 0.55);
+    tl.to(transLines, {
+      opacity: 1,
+      filter: 'blur(0px)',
+      duration: 0.15,
+      stagger: 0.06,
+      ease: 'power2.out'
+    }, 0.58);
+
+    // Phase 4 (0.85–1.0): transition text fades out
+    tl.to(transLines, {
+      opacity: 0,
+      filter: 'blur(10px)',
+      duration: 0.12,
+      stagger: 0.03
+    }, 0.85);
+    tl.to(transInner, { opacity: 0, duration: 0.1 }, 0.92);
+  }
+
+
+  /* ——————————————————————————————————————————
+     D2. Nav Logo — Center to Nav position
+     —————————————————————————————————————————— */
+  function initNavLogoAnimation() {
+    var navLogo = document.getElementById('navLogo');
+    var isMobile = window.innerWidth < 992;
+
+    var area = document.getElementById('heroArea');
+    var heroWrap = area.querySelector('.hero-wrap');
+
+    // Position logo — centered in portal, tuned per viewport
+    var rect = navLogo.getBoundingClientRect();
+    var portalCenterY = window.innerHeight * (isMobile ? 0.48 : 0.52);
+    var centerX = isMobile
+      ? (window.innerWidth * 0.5) - rect.left - (rect.width / 2)
+      : (window.innerWidth * 0.38) - rect.left - (rect.width / 2);
+    var centerY = portalCenterY - rect.top - (rect.height / 2);
+    var startScale = isMobile ? 1.6 : 2.2;
+
+    gsap.set(navLogo, { y: centerY, x: centerX, scale: startScale, opacity: 0 });
+    gsap.to(navLogo, { opacity: 1, duration: 1.5, delay: 0.3, ease: 'power2.out' });
+
+    gsap.to(navLogo, {
+      y: 0,
+      x: 0,
+      scale: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: area,
+        start: 'top top',
+        end: '40% top',
+        scrub: true
+      }
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     D3. Process Card Accordion + Chart Animations
+     —————————————————————————————————————————— */
+  function initProcessAccordion() {
+    document.querySelectorAll('[data-process-expand]').forEach(function(card) {
+      card.addEventListener('click', function() {
+        var wasExpanded = card.classList.contains('expanded');
+
+        // Close all
+        document.querySelectorAll('[data-process-expand].expanded').forEach(function(c) {
+          c.classList.remove('expanded');
+        });
+
+        if (!wasExpanded) {
+          card.classList.add('expanded');
+          // Animate charts inside this card after expand
+          setTimeout(function() { animateChart(card); }, 100);
+        }
+      });
+    });
+  }
+
+  function animateChart(card) {
+    // Bar chart fills
+    card.querySelectorAll('.chart-bar-fill').forEach(function(bar) {
+      var w = bar.getAttribute('data-width');
+      bar.style.width = w + '%';
+    });
+
+    // Timeline items — light up sequentially
+    var tlItems = card.querySelectorAll('.chart-tl-item');
+    tlItems.forEach(function(item, i) {
+      setTimeout(function() {
+        item.classList.add('lit');
+      }, i * 200);
+    });
+
+    // Donut fills
+    card.querySelectorAll('.donut-fill').forEach(function(circle) {
+      var pct = parseInt(circle.getAttribute('data-percent'));
+      var dash = (pct / 100) * 100;
+      gsap.to(circle, {
+        attr: { 'stroke-dasharray': dash + ' ' + (100 - dash) },
+        duration: 1.2,
+        ease: 'power2.out'
+      });
+    });
+
+    // Growth line draw
+    var growthLine = card.querySelector('.growth-line');
+    var growthArea = card.querySelector('.growth-area');
+    if (growthLine) {
+      gsap.to(growthLine, {
+        strokeDashoffset: 0,
+        duration: 1.8,
+        ease: 'power2.out'
+      });
+    }
+    if (growthArea) {
+      gsap.to(growthArea, {
+        opacity: 1,
+        duration: 1,
+        delay: 0.8,
+        ease: 'power2.out'
+      });
+    }
+  }
+
+
+  /* ——————————————————————————————————————————
+     E. Scroll Text Reveals
+     —————————————————————————————————————————— */
+  function initTextReveals() {
+    var isMobile = window.innerWidth < 992;
+
+    // [data-line-reveal] — reveal children as lines
+    document.querySelectorAll('[data-line-reveal]').forEach(function(el) {
+      var children = el.children;
+      if (!children.length) return;
+
+      // Set initial hidden state via GSAP (not CSS)
+      gsap.set(children, {
+        filter: isMobile ? 'none' : 'blur(36px)',
+        opacity: 0
+      });
+
+      gsap.to(children, {
+        filter: 'blur(0px)',
+        opacity: 1,
+        duration: 1,
+        delay: 0.3,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
+
+    // [data-div-reveal] — reveal direct children
+    document.querySelectorAll('[data-div-reveal]').forEach(function(el) {
+      var children = el.children;
+      if (!children.length) return;
+
+      // Set initial hidden state via GSAP (not CSS)
+      gsap.set(children, {
+        filter: isMobile ? 'none' : 'blur(36px)',
+        opacity: 0,
+        y: 30
+      });
+
+      gsap.to(children, {
+        filter: 'blur(0px)',
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     F. Highlight Text (scrub)
+     —————————————————————————————————————————— */
+  function initHighlightText() {
+    document.querySelectorAll('[data-highlight-text]').forEach(function(el) {
+      var split = splitText(el, 'words,chars');
+
+      // Set initial dim state
+      gsap.set(split.chars, { opacity: 0.15 });
+
+      gsap.to(split.chars, {
+        opacity: 1,
+        duration: 0.6,
+        stagger: { each: 0.04 },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 75%',
+          end: 'bottom 75%',
+          scrub: true
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     G. Magnetic Hover (gsap.quickTo)
+     —————————————————————————————————————————— */
+  function initMagneticHover() {
+    if (window.innerWidth < 992) return;
+
+    document.querySelectorAll('[data-magnetic-strength], [data-magnetic]').forEach(function(el) {
+      var strength = parseFloat(el.getAttribute('data-magnetic-strength')) || 25;
+      var factor = strength / 100;
+
+      var xTo = gsap.quickTo(el, 'x', { duration: 0.6, ease: 'elastic.out(1, 0.3)' });
+      var yTo = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'elastic.out(1, 0.3)' });
+
+      el.addEventListener('mousemove', function(e) {
+        var rect = el.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        xTo(x * factor);
+        yTo(y * factor);
+      });
+
+      el.addEventListener('mouseleave', function() {
+        xTo(0);
+        yTo(0);
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     H. Custom Cursor
+     —————————————————————————————————————————— */
+  function initCustomCursor() {
+    if (window.innerWidth <= 992) return;
+
+    var dot = document.getElementById('cursorDot');
+    var ring = document.getElementById('cursorRing');
+    if (!dot || !ring) return;
+
+    var mouseX = -100, mouseY = -100, ringX = -100, ringY = -100;
+
+    document.addEventListener('mousemove', function(e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top = mouseY + 'px';
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    var hoverTargets = 'a, button, .bento-card, .process-card, .contact-cta-card, .value-item, .nav-link, [data-magnetic], [data-magnetic-strength]';
+    document.querySelectorAll(hoverTargets).forEach(function(el) {
+      el.addEventListener('mouseenter', function() {
+        dot.classList.add('hovering');
+        ring.classList.add('hovering');
+      });
+      el.addEventListener('mouseleave', function() {
+        dot.classList.remove('hovering');
+        ring.classList.remove('hovering');
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     H2. 3D Card Tilt
+     —————————————————————————————————————————— */
+  function initCardTilt() {
+    if (window.innerWidth <= 992) return;
+
+    document.querySelectorAll('.bento-card, .process-card').forEach(function(card) {
+      var xTo = gsap.quickTo(card, 'rotateY', { duration: 0.6, ease: 'power2.out' });
+      var yTo = gsap.quickTo(card, 'rotateX', { duration: 0.6, ease: 'power2.out' });
+      card.style.transformStyle = 'preserve-3d';
+
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        xTo(x * 6);
+        yTo(-y * 6);
+      });
+
+      card.addEventListener('mouseleave', function() {
+        xTo(0);
+        yTo(0);
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     H3. Active Nav Scroll Spy
+     —————————————————————————————————————————— */
+  function initScrollSpy() {
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav-link');
+    if (!sections.length || !navLinks.length) return;
+
+    window.addEventListener('scroll', function() {
+      var scrollY = window.scrollY + window.innerHeight / 3;
+      sections.forEach(function(sec) {
+        var link = document.querySelector('.nav-link[href="#' + sec.id + '"]');
+        if (!link) return;
+        if (scrollY >= sec.offsetTop && scrollY < sec.offsetTop + sec.offsetHeight) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     I. CTA Char Stagger Hover
+     —————————————————————————————————————————— */
+  function initCtaHover() {
+    if (window.innerWidth < 992) return;
+
+    var textEl = document.getElementById('ctaBtnText');
+    if (!textEl) return;
+
+    var text = textEl.textContent;
+    textEl.innerHTML = '';
+    textEl.style.position = 'relative';
+    textEl.style.display = 'inline-flex';
+    textEl.style.overflow = 'hidden';
+
+    // Original chars
+    var origWrap = document.createElement('span');
+    origWrap.style.display = 'inline-flex';
+    var cloneWrap = document.createElement('span');
+    cloneWrap.style.display = 'inline-flex';
+    cloneWrap.style.position = 'absolute';
+    cloneWrap.style.top = '0';
+    cloneWrap.style.left = '0';
+
+    var origChars = [];
+    var cloneChars = [];
+
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      var origSpan = document.createElement('span');
+      origSpan.className = 'cta-char';
+      origSpan.textContent = ch === ' ' ? '\u00a0' : ch;
+      origSpan.style.display = 'inline-block';
+      origWrap.appendChild(origSpan);
+      origChars.push(origSpan);
+
+      var cloneSpan = document.createElement('span');
+      cloneSpan.className = 'cta-char';
+      cloneSpan.textContent = ch === ' ' ? '\u00a0' : ch;
+      cloneSpan.style.display = 'inline-block';
+      cloneWrap.appendChild(cloneSpan);
+      cloneChars.push(cloneSpan);
+    }
+
+    textEl.appendChild(origWrap);
+    textEl.appendChild(cloneWrap);
+
+    gsap.set(cloneChars, { yPercent: 100 });
+
+    var btn = textEl.closest('.cta-btn');
+    var tl = gsap.timeline({ paused: true });
+    tl.to(origChars, { yPercent: -100, stagger: 0.01, duration: 0.4, ease: 'power2.out' }, 0);
+    tl.to(cloneChars, { yPercent: 0, stagger: 0.01, duration: 0.4, ease: 'power2.out' }, 0);
+
+    btn.addEventListener('mouseenter', function() {
+      tl.timeScale(1).play();
+    });
+
+    btn.addEventListener('mouseleave', function() {
+      tl.timeScale(1.6).reverse();
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     J. Stats Dashboard — Odometer + Viz + Glow
+     —————————————————————————————————————————— */
+
+  // Build odometer digits for a number
+  function buildOdometer(container, targetNum, suffix) {
+    var digits = String(targetNum).split('');
+    container.innerHTML = '';
+    digits.forEach(function(d, i) {
+      var wrap = document.createElement('span');
+      wrap.className = 'stat-digit-wrap';
+      var inner = document.createElement('span');
+      inner.className = 'stat-digit-inner';
+      inner.setAttribute('data-target-digit', d);
+      // Create digit strip: 0-9 then the target digit
+      for (var n = 0; n <= 10; n++) {
+        var ch = document.createElement('span');
+        ch.className = 'stat-digit-char';
+        ch.textContent = n > 9 ? d : String(n);
+        inner.appendChild(ch);
+      }
+      wrap.appendChild(inner);
+      container.appendChild(wrap);
+    });
+    // Suffix
+    var suf = document.createElement('span');
+    suf.className = 'stat-suffix';
+    suf.textContent = suffix;
+    container.appendChild(suf);
+  }
+
+  // Animate odometer: each digit rolls to target with stagger
+  function rollOdometer(container, delay) {
+    if (!container) return;
+    var inners = container.querySelectorAll('.stat-digit-inner');
+    inners.forEach(function(inner, i) {
+      var target = parseInt(inner.getAttribute('data-target-digit'));
+      // Roll to position (target * 1.1em + 10th position for final)
+      var yTarget = -(target * 1.1); // em
+      setTimeout(function() {
+        inner.classList.add('animated');
+        inner.style.transform = 'translateY(' + yTarget + 'em)';
+      }, delay + (i * 120));
+    });
+  }
+
+  function initCounters() {
+    var cards = document.querySelectorAll('.stat-card');
+    var isMobile = window.innerWidth < 992;
+
+    cards.forEach(function(card) {
+      var target = parseInt(card.getAttribute('data-stat'));
+      var suffix = card.getAttribute('data-stat-suffix') || '';
+      var progress = parseInt(card.getAttribute('data-stat-progress')) || 0;
+      var odoContainer = card.querySelector('.stat-odometer');
+
+      // Build odometer
+      buildOdometer(odoContainer, target, suffix);
+
+      // Card glow follower (desktop only)
+      if (!isMobile) {
+        var glow = card.querySelector('.stat-card-glow');
+        card.addEventListener('mousemove', function(e) {
+          var rect = card.getBoundingClientRect();
+          if (glow) {
+            glow.style.left = (e.clientX - rect.left) + 'px';
+            glow.style.top = (e.clientY - rect.top) + 'px';
+          }
+        });
+      }
+    });
+
+    // Sequential reveal on scroll
+    cards.forEach(function(card, idx) {
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 88%',
+        once: true,
+        onEnter: function() {
+          var delay = idx * 200;
+          // Reveal card
+          gsap.to(card, {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 0.8,
+            delay: delay / 1000,
+            ease: 'power3.out'
+          });
+
+          // Roll odometer
+          var odoContainer = card.querySelector('.stat-odometer');
+          rollOdometer(odoContainer, delay + 300);
+
+          // Animate progress bar
+          var progFill = card.querySelector('.stat-progress-fill');
+          var progress = parseInt(card.getAttribute('data-stat-progress')) || 0;
+          setTimeout(function() {
+            if (!progFill) return;
+            progFill.classList.add('animated');
+            progFill.style.width = progress + '%';
+          }, delay + 400);
+
+          // ---- 3D DONUT CHART ----
+          var donut = card.querySelector('.stat-donut-3d');
+          if (donut) {
+            var segs = donut.querySelectorAll('.stat-donut-seg');
+            var circumference = 2 * Math.PI * 40; // r=40
+            var cumOffset = 0;
+
+            segs.forEach(function(seg, si) {
+              var pct = parseFloat(seg.getAttribute('data-pct')) || 0;
+              var segLen = circumference * pct / 100;
+              var gap = 4;
+              // Set initial state: no visible stroke
+              seg.style.strokeDasharray = '0 ' + circumference;
+              seg.style.strokeDashoffset = -cumOffset;
+
+              setTimeout(function() {
+                seg.classList.add('animated');
+                seg.style.strokeDasharray = (segLen - gap) + ' ' + (circumference - segLen + gap);
+              }, delay + 500 + si * 200);
+
+              cumOffset += segLen;
+            });
+
+            // Show center text
+            var centerText = donut.querySelector('.stat-donut-center-text');
+            if (centerText) {
+              setTimeout(function() { centerText.classList.add('visible'); }, delay + 800);
+            }
+
+            // 3D tilt loop
+            gsap.timeline({ repeat: -1, yoyo: true, delay: (delay + 1200) / 1000 })
+              .to(donut, { rotateX: 25, rotateY: -15, duration: 4, ease: 'sine.inOut' })
+              .to(donut, { rotateX: -10, rotateY: 20, duration: 4, ease: 'sine.inOut' });
+          }
+
+          // ---- 3D CONSTELLATION ----
+          var constellation = card.querySelector('.stat-constellation');
+          if (constellation) {
+            var orbitDots = constellation.querySelectorAll('.stat-orbit-dot');
+            var orbitLines = constellation.querySelectorAll('.stat-orbit-line');
+
+            // Fade in dots
+            orbitDots.forEach(function(dot, di) {
+              gsap.to(dot, {
+                opacity: 1,
+                duration: 0.6,
+                delay: (delay + 500 + di * 120) / 1000,
+                ease: 'power2.out'
+              });
+            });
+
+            // Continuous 3D orbit animation
+            var orbitData = [];
+            orbitDots.forEach(function(dot) {
+              orbitData.push({
+                el: dot,
+                radius: parseFloat(dot.getAttribute('data-orbit')) || 40,
+                speed: parseFloat(dot.getAttribute('data-speed')) || 8,
+                offset: (parseFloat(dot.getAttribute('data-offset')) || 0) * Math.PI / 180,
+                z: parseFloat(dot.getAttribute('data-z')) || 0
+              });
+            });
+
+            var startTime = performance.now();
+            function animateConstellation() {
+              var t = (performance.now() - startTime) / 1000;
+              var dotPositions = [];
+              orbitData.forEach(function(d) {
+                var angle = d.offset + (t * 2 * Math.PI / d.speed);
+                var x = Math.cos(angle) * d.radius;
+                var y = Math.sin(angle) * d.radius * 0.5;
+                var z = Math.sin(angle + 0.5) * d.z;
+                d.el.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, ' + z + 'px)';
+                var sc = 1 + z / 80;
+                d.el.style.transform += ' scale(' + sc + ')';
+                dotPositions.push({ x: x + 60, y: y + 50 });
+              });
+
+              // Update connection lines
+              for (var li = 0; li < orbitLines.length && li < dotPositions.length - 1; li++) {
+                var a = dotPositions[li];
+                var b = dotPositions[li + 1];
+                var dx = b.x - a.x;
+                var dy = b.y - a.y;
+                var len = Math.sqrt(dx * dx + dy * dy);
+                var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+                orbitLines[li].style.width = len + 'px';
+                orbitLines[li].style.transform = 'translate(' + (a.x - 60) + 'px, ' + (a.y - 50) + 'px) rotate(' + ang + 'deg)';
+                orbitLines[li].style.opacity = Math.max(0, 0.3 - len / 300);
+              }
+
+              requestAnimationFrame(animateConstellation);
+            }
+            setTimeout(function() {
+              animateConstellation();
+            }, delay + 500);
+
+            // Slow 3D tilt of entire constellation
+            gsap.timeline({ repeat: -1, yoyo: true, delay: (delay + 800) / 1000 })
+              .to(constellation, { rotateX: 25, rotateY: 15, duration: 5, ease: 'sine.inOut' })
+              .to(constellation, { rotateX: -15, rotateY: -20, duration: 5, ease: 'sine.inOut' });
+          }
+
+          // ---- 3D RING GAUGE ----
+          var ring3d = card.querySelector('.stat-ring-3d');
+          if (ring3d) {
+            var ringFill = ring3d.querySelector('.stat-ring-fill');
+            var ringText = ring3d.querySelector('.stat-ring-text');
+            var ringGlow = ring3d.querySelector('.stat-ring-glow');
+            var particles = ring3d.querySelectorAll('.stat-ring-particle');
+            var circumference = 2 * Math.PI * 45; // r=45
+
+            if (ringFill) {
+              ringFill.style.strokeDasharray = circumference;
+              ringFill.style.strokeDashoffset = circumference;
+              ringFill.style.transformOrigin = '50% 50%';
+              ringFill.style.transform = 'rotate(-90deg)';
+            }
+
+            // Fill animation
+            var ringObj = { val: 0 };
+            gsap.to(ringObj, {
+              val: 100,
+              duration: 2.5,
+              delay: (delay + 400) / 1000,
+              ease: 'power2.out',
+              onUpdate: function() {
+                if (ringFill) {
+                  var offset = circumference - (circumference * ringObj.val / 100);
+                  ringFill.style.strokeDashoffset = offset;
+                }
+                if (ringText) ringText.textContent = Math.round(ringObj.val) + '%';
+              },
+              onComplete: function() {
+                // Start glow orbit
+                if (ringGlow) {
+                  ringGlow.style.opacity = '1';
+                  gsap.timeline({ repeat: -1 })
+                    .to(ringGlow, {
+                      motionPath: {
+                        path: 'M50,5 A45,45 0 1,1 49.99,5',
+                        transformOrigin: '50% 50%'
+                      },
+                      duration: 3,
+                      ease: 'none'
+                    });
+                  // Fallback: CSS rotation if motionPath not available
+                  gsap.to(ringGlow, {
+                    rotation: 360,
+                    duration: 3,
+                    repeat: -1,
+                    ease: 'none',
+                    transformOrigin: '50% 250%'
+                  });
+                }
+              }
+            });
+
+            // Particles floating
+            particles.forEach(function(p, pi) {
+              var angle = (pi / particles.length) * 360;
+              gsap.set(p, {
+                x: Math.cos(angle * Math.PI / 180) * 48,
+                y: Math.sin(angle * Math.PI / 180) * 48,
+                left: '50%',
+                top: '50%'
+              });
+              gsap.to(p, {
+                opacity: 0.6,
+                duration: 0.4,
+                delay: (delay + 1500 + pi * 100) / 1000,
+                onComplete: function() {
+                  gsap.to(p, {
+                    y: '+=' + (Math.random() * 20 - 10),
+                    x: '+=' + (Math.random() * 20 - 10),
+                    opacity: 0,
+                    duration: 1.5 + Math.random(),
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut',
+                    delay: Math.random() * 0.5
+                  });
+                }
+              });
+            });
+
+            // 3D tilt loop
+            gsap.timeline({ repeat: -1, yoyo: true, delay: (delay + 800) / 1000 })
+              .to(ring3d, { rotateX: 20, rotateY: -15, duration: 4, ease: 'sine.inOut' })
+              .to(ring3d, { rotateX: -10, rotateY: 20, duration: 4, ease: 'sine.inOut' });
+          }
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     K. Carousel GSAP Infinite Loop
+     —————————————————————————————————————————— */
+  function initCarousel() {
+    var track = document.getElementById('carouselTrack');
+    if (!track) return;
+
+    var totalWidth = track.scrollWidth / 2;
+
+    gsap.to(track, {
+      x: -totalWidth,
+      duration: 40,
+      ease: 'none',
+      repeat: -1
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     L. CTA Bar visibility
+     —————————————————————————————————————————— */
+  function initCtaBar() {
+    var ctaBar = document.getElementById('ctaBar');
+    ScrollTrigger.create({
+      trigger: document.getElementById('about'),
+      start: 'top 80%',
+      onEnter: function() { ctaBar.classList.add('visible'); },
+      onLeaveBack: function() { ctaBar.classList.remove('visible'); }
+    });
+
+    // Hide near footer
+    ScrollTrigger.create({
+      trigger: document.querySelector('.footer'),
+      start: 'top 90%',
+      onEnter: function() { ctaBar.classList.remove('visible'); },
+      onLeaveBack: function() { ctaBar.classList.add('visible'); }
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     M. Nav scroll state
+     —————————————————————————————————————————— */
+  function initNavScroll() {
+    var nav = document.getElementById('nav');
+    ScrollTrigger.create({
+      start: 'top -100',
+      onUpdate: function(self) {
+        if (self.scroll() > 100) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     N. Scroll Progress Bar
+     —————————————————————————————————————————— */
+  function initScrollProgress() {
+    var bar = document.getElementById('scrollProgress');
+    ScrollTrigger.create({
+      start: 'top top',
+      end: 'max',
+      onUpdate: function(self) {
+        bar.style.width = (self.progress * 100) + '%';
+      }
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     O. Hero Tagline blur reveal (timed, after preloader)
+     —————————————————————————————————————————— */
+  function initHeroTagline() {
+    var tagline = document.getElementById('heroTagline');
+    if (!tagline) return;
+    var children = tagline.children;
+    gsap.set(children, { opacity: 0, y: 12 });
+    gsap.to(children, {
+      opacity: 0.8,
+      y: 0,
+      duration: 1.2,
+      delay: 0.8,
+      stagger: 0.12,
+      ease: 'power3.out'
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     O2. Value Accordion
+     —————————————————————————————————————————— */
+  function initValueAccordion() {
+    document.querySelectorAll('[data-value-expand]').forEach(function(item) {
+      item.addEventListener('click', function() {
+        var wasExpanded = item.classList.contains('expanded');
+        // Close siblings
+        item.closest('.values-list').querySelectorAll('.value-item.expanded').forEach(function(v) {
+          v.classList.remove('expanded');
+        });
+        if (!wasExpanded) {
+          item.classList.add('expanded');
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     P. Bento Card Accordion
+     —————————————————————————————————————————— */
+  function initBentoAccordion() {
+    document.querySelectorAll('[data-expandable]').forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        // Don't toggle if clicking a link inside
+        if (e.target.closest('a')) return;
+
+        var wasExpanded = card.classList.contains('expanded');
+
+        // Close all others
+        document.querySelectorAll('[data-expandable].expanded').forEach(function(c) {
+          c.classList.remove('expanded');
+        });
+
+        // Toggle current
+        if (!wasExpanded) {
+          card.classList.add('expanded');
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     P2. Stat Card Accordion
+     —————————————————————————————————————————— */
+  function initStatAccordion() {
+    document.querySelectorAll('[data-stat-expand]').forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('a')) return;
+        var wasExpanded = card.classList.contains('expanded');
+        // Close all stat cards
+        document.querySelectorAll('[data-stat-expand].expanded').forEach(function(c) {
+          c.classList.remove('expanded');
+        });
+        if (!wasExpanded) {
+          card.classList.add('expanded');
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     Q. Mobile Hamburger
+     —————————————————————————————————————————— */
+  function initHamburger() {
+    var btn = document.getElementById('hamburger');
+    var menu = document.getElementById('mobileMenu');
+    if (!btn || !menu) return;
+    var links = menu.querySelectorAll('.mobile-link');
+
+    btn.addEventListener('click', function() {
+      btn.classList.toggle('active');
+      menu.classList.toggle('open');
+      document.body.classList.toggle('locked');
+    });
+
+    links.forEach(function(link) {
+      link.addEventListener('click', function() {
+        btn.classList.remove('active');
+        menu.classList.remove('open');
+        document.body.classList.remove('locked');
+        // Smooth scroll with Lenis
+        var target = link.getAttribute('href');
+        if (lenis && target.startsWith('#')) {
+          lenis.scrollTo(target, { offset: -80 });
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     R. Smooth scroll for anchor links
+     —————————————————————————————————————————— */
+  function initSmoothAnchors() {
+    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        var target = a.getAttribute('href');
+        if (target === '#') return;
+        e.preventDefault();
+        if (lenis) {
+          lenis.scrollTo(target, { offset: -80 });
+        }
+      });
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     INIT — Boot sequence
+     —————————————————————————————————————————— */
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Start preloader, then init everything
+  initPreloader(function() {
+    initLenis();
+    initHeroIntro();
+    initHeroZoom();
+    initNavLogoAnimation();
+    initHeroTagline();
+    initTextReveals();
+    initHighlightText();
+    initMagneticHover();
+    initCustomCursor();
+    initCardTilt();
+    initScrollSpy();
+    initCtaHover();
+    initCounters();
+    initCarousel();
+    initCtaBar();
+    initNavScroll();
+    initScrollProgress();
+    initBentoAccordion();
+    initProcessAccordion();
+    initValueAccordion();
+    initStatAccordion();
+    initHamburger();
+    initSmoothAnchors();
+    ScrollTrigger.refresh();
+  });
+
+})();
+</script>
+
+</body>
+</html>

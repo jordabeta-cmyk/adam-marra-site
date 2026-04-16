@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Screenshots (generated, not source)
+temporary_screenshots/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Claude internal
+.claude/
+
+# Large media — social post images (not part of the site)
+93.*.png
+94.*.png
+96.*.png
+97.*.png
+106.*.png
+107.*.png
+108.*.png
+109.*.png
+110.*.png
+111.*.png
+Xnapper-*.png
