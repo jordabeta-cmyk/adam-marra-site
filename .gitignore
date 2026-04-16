@@ -16,15 +16,5 @@ Thumbs.db
 # Claude internal
 .claude/
 
-# Large media — social post images (not part of the site)
-93.*.png
-94.*.png
-96.*.png
-97.*.png
-106.*.png
-107.*.png
-108.*.png
-109.*.png
-110.*.png
-111.*.png
+# Misc screenshots
 Xnapper-*.png
