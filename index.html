@@ -3158,6 +3158,7 @@ input, textarea, select { font-family: inherit; }
     var left = document.getElementById('heroLeft');
     var right = document.getElementById('heroRight');
     var bottom = document.getElementById('heroBottom');
+    var tagline = document.getElementById('heroTagline');
 
     var tl = gsap.timeline({
       scrollTrigger: {
@@ -3185,6 +3186,8 @@ input, textarea, select { font-family: inherit; }
     tl.to(left, { x: '-' + splitX, ease: 'none', duration: 0.55 }, 0);
     tl.to(right, { x: splitX, ease: 'none', duration: 0.55 }, 0);
     tl.to(bottom, { autoAlpha: 0, duration: 0.1 }, 0);
+    // Tagline esce subito, prima che parta il transition text
+    tl.to(tagline, { autoAlpha: 0, y: -20, duration: 0.08, ease: 'power2.in' }, 0);
 
     // Phase 2 (0.45–0.65): fade portal to black
     tl.to(fade, { opacity: 1, ease: 'power2.in', duration: 0.2 }, 0.45);
