@@ -723,6 +723,28 @@ input, textarea, select { font-family: inherit; }
   animation: showcaseScrollReverse 50s linear infinite;
 }
 
+.content-showcase-link {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content-showcase-link:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.content-showcase-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 6px;
+  border-radius: 18px;
+}
+
+.content-showcase-link:hover img {
+  box-shadow: 0 20px 50px rgba(201, 168, 76, 0.25);
+}
+
 .content-showcase-track img {
   width: clamp(180px, 20vw, 260px);
   height: auto;
@@ -2541,32 +2563,33 @@ input, textarea, select { font-family: inherit; }
 </section>
 
 <!-- ========== CONTENT SHOWCASE — Scrolling Screenshots ========== -->
-<section class="content-showcase">
+<section class="content-showcase" aria-label="Ultimi contenuti Instagram">
   <div class="content-showcase-track" id="contentTrack1">
-    <img src="93. la chiave più importante.png" alt="Content" loading="lazy">
-    <img src="94. strumenti utili.png" alt="Content" loading="lazy">
-    <img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="Content" loading="lazy">
-    <img src="97. LO SAI CHE IL FATTURATO.png" alt="Content" loading="lazy">
-    <img src="106. il tuo servizio è impeccabile 2.png" alt="Content" loading="lazy">
-    <img src="93. la chiave più importante.png" alt="Content" loading="lazy">
-    <img src="94. strumenti utili.png" alt="Content" loading="lazy">
-    <img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="Content" loading="lazy">
-    <img src="97. LO SAI CHE IL FATTURATO.png" alt="Content" loading="lazy">
-    <img src="106. il tuo servizio è impeccabile 2.png" alt="Content" loading="lazy">
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: la chiave più importante"><img src="93. la chiave più importante.png" alt="Cover video: la chiave più importante" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: strumenti utili"><img src="94. strumenti utili.png" alt="Cover video: strumenti utili" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: hai un funnel che funziona"><img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="Cover video: hai un funnel che funziona" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: lo sai che il fatturato"><img src="97. LO SAI CHE IL FATTURATO.png" alt="Cover video: lo sai che il fatturato" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: il tuo servizio è impeccabile"><img src="106. il tuo servizio è impeccabile 2.png" alt="Cover video: il tuo servizio è impeccabile" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="93. la chiave più importante.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="94. strumenti utili.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="97. LO SAI CHE IL FATTURATO.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="106. il tuo servizio è impeccabile 2.png" alt="" loading="lazy"></a>
   </div>
   <div class="content-showcase-track reverse" id="contentTrack2">
-    <img src="107. adam posso farlo 2.png" alt="Content" loading="lazy">
-    <img src="108. le tue ads non performano 2.png" alt="Content" loading="lazy">
-    <img src="109. adam voglio pubblicare 2.png" alt="Content" loading="lazy">
-    <img src="110. le ads non performano 2.png" alt="Content" loading="lazy">
-    <img src="111. un corso 2.png" alt="Content" loading="lazy">
-    <img src="107. adam posso farlo 2.png" alt="Content" loading="lazy">
-    <img src="108. le tue ads non performano 2.png" alt="Content" loading="lazy">
-    <img src="109. adam voglio pubblicare 2.png" alt="Content" loading="lazy">
-    <img src="110. le ads non performano 2.png" alt="Content" loading="lazy">
-    <img src="111. un corso 2.png" alt="Content" loading="lazy">
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: adam posso farlo"><img src="107. adam posso farlo 2.png" alt="Cover video: adam posso farlo" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: le tue ads non performano"><img src="108. le tue ads non performano 2.png" alt="Cover video: le tue ads non performano" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: adam voglio pubblicare"><img src="109. adam voglio pubblicare 2.png" alt="Cover video: adam voglio pubblicare" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: le ads non performano"><img src="110. le ads non performano 2.png" alt="Cover video: le ads non performano" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: un corso"><img src="111. un corso 2.png" alt="Cover video: un corso" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="107. adam posso farlo 2.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="108. le tue ads non performano 2.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="109. adam voglio pubblicare 2.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="110. le ads non performano 2.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="111. un corso 2.png" alt="" loading="lazy"></a>
   </div>
 </section>
+<!-- NOTA: gli href ora puntano tutti al profilo. Quando i 10 post saranno pubblici, sostituire ogni href con l'URL permalink del singolo post Instagram (es. https://www.instagram.com/p/ABC123/). Le copertine duplicate (quelle con aria-hidden) servono al loop infinito della track, non vanno indicizzate dagli screen reader. -->
 
 <!-- ========== SERVIZI — Bento Grid ========== -->
 <section class="services section-pad" id="services">
