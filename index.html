@@ -2597,7 +2597,7 @@ input, textarea, select { font-family: inherit; }
     <h2>Tutto ciò che serve<br>al tuo <span class="accent">brand</span></h2>
   </div>
   <div class="bento-grid" data-div-reveal>
-    <div class="bento-card span-2" data-expandable>
+    <div class="bento-card span-2" data-expandable data-pair-group="a">
       <span class="bento-number">01</span>
       <div class="bento-content">
         <h3>Content Strategy</h3>
@@ -2616,7 +2616,7 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
-    <div class="bento-card" data-expandable>
+    <div class="bento-card" data-expandable data-pair-group="a">
       <span class="bento-number">02</span>
       <div class="bento-content">
         <h3>Funnel di Vendita</h3>
@@ -2635,7 +2635,7 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
-    <div class="bento-card" data-expandable>
+    <div class="bento-card" data-expandable data-pair-group="b">
       <span class="bento-number">03</span>
       <div class="bento-content">
         <h3>Personal Branding</h3>
@@ -2653,7 +2653,7 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
-    <div class="bento-card span-2" data-expandable>
+    <div class="bento-card span-2" data-expandable data-pair-group="b">
       <span class="bento-number">04</span>
       <div class="bento-content">
         <h3>Social Media Management</h3>
@@ -2671,7 +2671,7 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
-    <div class="bento-card span-3" data-expandable>
+    <div class="bento-card span-3" data-expandable data-pair-group="c">
       <span class="bento-number">05</span>
       <div class="bento-content">
         <h3>Consulenza 1:1</h3>
@@ -4038,15 +4038,23 @@ input, textarea, select { font-family: inherit; }
         // Don't toggle if clicking a link inside
         if (e.target.closest('a')) return;
 
+        var group = card.getAttribute('data-pair-group');
         var wasExpanded = card.classList.contains('expanded');
 
-        // Close all others
+        // Close everything first
         document.querySelectorAll('[data-expandable].expanded').forEach(function(c) {
           c.classList.remove('expanded');
         });
 
-        // Toggle current
-        if (!wasExpanded) {
+        // If we were already expanded, stop here (toggle off)
+        if (wasExpanded) return;
+
+        // Open all cards of the same group together
+        if (group) {
+          document.querySelectorAll('[data-expandable][data-pair-group="' + group + '"]').forEach(function(c) {
+            c.classList.add('expanded');
+          });
+        } else {
           card.classList.add('expanded');
         }
       });
