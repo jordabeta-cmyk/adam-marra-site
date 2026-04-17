@@ -1019,9 +1019,7 @@ input, textarea, select { font-family: inherit; }
   line-height: 1.7;
 }
 
-[data-process-expand] {
-  cursor: pointer;
-}
+/* process cards now always expanded — no interactive cursor needed */
 
 .process-toggle {
   display: inline-flex;
@@ -1051,7 +1049,7 @@ input, textarea, select { font-family: inherit; }
 }
 
 .process-card.expanded .process-expand {
-  max-height: 500px;
+  max-height: 800px;
 }
 
 .process-chart {
@@ -2699,11 +2697,10 @@ input, textarea, select { font-family: inherit; }
     <h2>Il Percorso in<br><span class="accent" style="font-family:var(--font-accent);font-style:italic;font-weight:400;color:var(--gold);">4 Step</span></h2>
   </div>
   <div class="process-grid" data-div-reveal>
-    <div class="process-card" data-process-expand>
+    <div class="process-card expanded">
       <div class="process-num">01</div>
       <h3>Analisi</h3>
       <p>Studio approfondito del tuo brand, mercato, competitor e pubblico target. Mappiamo i punti di forza e le opportunità.</p>
-      <span class="process-toggle">Vedi metriche <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
       <div class="process-expand">
         <div class="process-chart" id="chartAnalisi">
           <div class="chart-bars">
@@ -2717,11 +2714,10 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
-    <div class="process-card" data-process-expand>
+    <div class="process-card expanded">
       <div class="process-num">02</div>
       <h3>Strategia</h3>
       <p>Definiamo il piano d'azione: posizionamento, contenuti, canali e timeline. Ogni mossa è calcolata.</p>
-      <span class="process-toggle">Vedi roadmap <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
       <div class="process-expand">
         <div class="process-chart" id="chartStrategia">
           <div class="chart-timeline">
@@ -2735,11 +2731,10 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
-    <div class="process-card" data-process-expand>
+    <div class="process-card expanded">
       <div class="process-num">03</div>
       <h3>Esecuzione</h3>
       <p>Creiamo e pubblichiamo contenuti di alta qualità. Copy, visual, scheduling. Tutto curato nei minimi dettagli.</p>
-      <span class="process-toggle">Vedi output <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
       <div class="process-expand">
         <div class="process-chart" id="chartEsecuzione">
           <div class="chart-donuts">
@@ -2769,11 +2764,10 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
-    <div class="process-card" data-process-expand>
+    <div class="process-card expanded">
       <div class="process-num">04</div>
       <h3>Ottimizzazione</h3>
       <p>Monitoriamo i risultati, analizziamo i dati e raffiniamo la strategia per massimizzare performance e ROI.</p>
-      <span class="process-toggle">Vedi crescita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></span>
       <div class="process-expand">
         <div class="process-chart" id="chartOttimizzazione">
           <div class="chart-growth">
@@ -3281,21 +3275,25 @@ input, textarea, select { font-family: inherit; }
      D3. Process Card Accordion + Chart Animations
      —————————————————————————————————————————— */
   function initProcessAccordion() {
-    document.querySelectorAll('[data-process-expand]').forEach(function(card) {
-      card.addEventListener('click', function() {
-        var wasExpanded = card.classList.contains('expanded');
+    // Process cards are always expanded: trigger chart animations when the
+    // process section enters the viewport, staggered for visual rhythm.
+    var processSection = document.querySelector('.process');
+    if (!processSection) return;
 
-        // Close all
-        document.querySelectorAll('[data-process-expand].expanded').forEach(function(c) {
-          c.classList.remove('expanded');
+    var cards = processSection.querySelectorAll('.process-card');
+    if (!cards.length) return;
+
+    var triggered = false;
+    ScrollTrigger.create({
+      trigger: processSection,
+      start: 'top 70%',
+      onEnter: function() {
+        if (triggered) return;
+        triggered = true;
+        cards.forEach(function(card, i) {
+          setTimeout(function() { animateChart(card); }, i * 220);
         });
-
-        if (!wasExpanded) {
-          card.classList.add('expanded');
-          // Animate charts inside this card after expand
-          setTimeout(function() { animateChart(card); }, 100);
-        }
-      });
+      }
     });
   }
 
