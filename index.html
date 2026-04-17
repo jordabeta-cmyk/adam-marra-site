@@ -1292,7 +1292,8 @@ input, textarea, select { font-family: inherit; }
 /* ---- Visualization area ---- */
 .stat-viz {
   position: relative;
-  height: 110px;
+  height: 120px;
+  min-height: 120px;
   margin-bottom: 24px;
   z-index: 1;
   perspective: 600px;
@@ -1499,17 +1500,20 @@ input, textarea, select { font-family: inherit; }
 /* ---- Odometer number ---- */
 .stat-odometer {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   gap: 0;
   position: relative;
   z-index: 1;
   margin-bottom: 12px;
+  min-height: 1.15em;
   font-family: var(--font-heading);
   font-size: clamp(2.8rem, 4.5vw, 4.2rem);
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
 .stat-digit-wrap {
@@ -1539,6 +1543,8 @@ input, textarea, select { font-family: inherit; }
   color: var(--cream);
   text-align: center;
   min-width: 0.62em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
 .stat-suffix {
@@ -1546,7 +1552,7 @@ input, textarea, select { font-family: inherit; }
   color: var(--gold);
   line-height: 1.15;
   margin-left: 2px;
-  align-self: center;
+  align-self: baseline;
 }
 
 /* ---- Progress bar ---- */
