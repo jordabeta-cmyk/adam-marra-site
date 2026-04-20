@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Adam Marra — Scroll-Driven Story</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #0A0A0A;
+    color: #F5EBD6;
+    font-family: 'Inter', system-ui, sans-serif;
+    height: 100%;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  #root { position: fixed; inset: 0; }
+  .loader {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #0A0A0A;
+    z-index: 9999;
+    transition: opacity .5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .loader.gone { opacity: 0; pointer-events: none; }
+  .loader .rule {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,.6), transparent);
+    animation: sweep 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  @keyframes sweep {
+    0%, 100% { opacity: 0.25; transform: scaleX(0.6); }
+    50%      { opacity: 1;    transform: scaleX(1); }
+  }
+</style>
+</head>
+<body>
+<div class="loader" id="loader" aria-hidden="true"><span class="rule"></span></div>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="animations.jsx"></script>
+<script type="text/babel" src="scenes.jsx"></script>
+<script type="text/babel" src="scenes2.jsx"></script>
+
+<script type="text/babel">
+/* ScrollProgressStage — identical to Stage but time is externally controlled.
+   Parent sends postMessage({type:'scroll-progress', value: 0..1}) each frame;
+   we clamp to duration and feed the TimelineContext.
+*/
+function ScrollProgressStage({ width = 1920, height = 1080, duration = 45, background = '#0A0A0A', children }) {
+  const [time, setTime] = React.useState(0);
+  const [scale, setScale] = React.useState(1);
+  const stageRef = React.useRef(null);
+
+  // Fit to viewport — CONTAIN (no clipping).
+  // On wide screens we allow a slight over-scale (up to 1.15×) so the scene
+  // feels full-bleed; on narrow screens pure contain prevents the 1920-wide
+  // headlines from being cropped off the sides. Black letterbox blends with
+  // the page background so it reads as stage, not bars.
+  React.useEffect(() => {
+    const measure = () => {
+      const contain = Math.min(window.innerWidth / width, window.innerHeight / height);
+      const cover = Math.max(window.innerWidth / width, window.innerHeight / height);
+      const aspect = window.innerWidth / window.innerHeight;
+      const stageAspect = width / height;
+      // If viewport is close to stage aspect (±25%), go slightly toward cover.
+      // Otherwise stick to contain so no content clips.
+      const ratio = aspect / stageAspect;
+      const near = ratio > 0.75 && ratio < 1.33;
+      const s = near ? Math.min(cover, contain * 1.08) : contain;
+      setScale(s);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [width, height]);
+
+  // Listen for parent-driven progress.
+  // ScrollTrigger's scrub already smooths input — applying a second lerp here
+  // made scenes feel unstuck from the user's finger. Write time directly.
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      if (!e.data || e.data.type !== 'scroll-progress') return;
+      const p = Math.max(0, Math.min(1, e.data.value));
+      setTime(p * duration);
+    };
+    window.addEventListener('message', onMsg);
+
+    try { window.parent.postMessage({ type: 'scroll-video-ready' }, '*'); } catch {}
+
+    return () => window.removeEventListener('message', onMsg);
+  }, [duration]);
+
+  const ctxValue = React.useMemo(
+    () => ({ time, duration, playing: false, setTime: () => {}, setPlaying: () => {} }),
+    [time, duration]
+  );
+
+  return (
+    <div ref={stageRef} style={{
+      position: 'fixed', inset: 0,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: '#000', overflow: 'hidden',
+    }}>
+      <div style={{
+        width, height, background,
+        position: 'relative',
+        transform: `scale(${scale})`,
+        transformOrigin: 'center',
+        flexShrink: 0, overflow: 'hidden',
+      }}>
+        <TimelineContext.Provider value={ctxValue}>
+          {children}
+        </TimelineContext.Provider>
+      </div>
+    </div>
+  );
+}
+
+// Respect reduced motion — freeze on a representative frame
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function App() {
+  const config = { fromN: 12400, toN: 184000, revenue: 340000 };
+
+  if (prefersReducedMotion) {
+    // Render just the final lockup frame for reduced-motion users
+    return (
+      <div style={{
+        position: 'fixed', inset: 0,
+        background: '#0A0A0A',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontFamily: "'Playfair Display', serif",
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 'clamp(56px, 10vw, 160px)', fontWeight: 700, color: '#F5EBD6' }}>
+            Adam <span style={{ color: '#C9A84C', fontStyle: 'italic', fontWeight: 400 }}>Marra</span>
+          </div>
+          <div style={{
+            marginTop: 24,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 13, letterSpacing: '.3em', textTransform: 'uppercase',
+            color: 'rgba(245,235,214,.6)',
+          }}>
+            Content Marketing · Brand Strategy
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ScrollProgressStage width={1920} height={1080} duration={45} background="#0A0A0A">
+      <VideoRoot config={config} />
+    </ScrollProgressStage>
+  );
+}
+
+// Render — hide loader once React commits
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    const loader = document.getElementById('loader');
+    if (loader) {
+      loader.classList.add('gone');
+      setTimeout(() => loader.remove(), 500);
+    }
+  });
+});
+</script>
+
+</body>
+</html>

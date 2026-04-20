@@ -713,24 +713,55 @@ input, textarea, select { font-family: inherit; }
 /* ============================================
    CONTENT SHOWCASE — Scrolling Screenshots
    ============================================ */
+.content-showcase-header {
+  background: var(--bg);
+  text-align: center;
+  padding: clamp(80px, 10vw, 140px) clamp(24px, 5vw, 80px) 0;
+}
+
+.content-showcase-header h2 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--cream);
+}
+
+.content-showcase-header h2 em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: -0.01em;
+}
+
 .content-showcase {
   overflow: hidden;
   padding: clamp(40px, 5vw, 60px) 0;
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(12px, 1.4vw, 20px);
+  /* Soft vignette on the left/right edges so the ticker fades
+     into the page rather than hard-cutting at the viewport. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
 }
 
 .content-showcase-track {
   display: flex;
-  gap: 16px;
+  gap: clamp(12px, 1.2vw, 18px);
   width: max-content;
   animation: showcaseScroll 45s linear infinite;
+  will-change: transform;
 }
 
-.content-showcase-track.reverse {
-  animation: showcaseScrollReverse 50s linear infinite;
+/* Hovering the section pauses the track so the user can actually
+   land on a card and click it without chasing the animation. */
+.content-showcase:hover .content-showcase-track,
+.content-showcase:focus-within .content-showcase-track {
+  animation-play-state: paused;
 }
 
 .content-showcase-link {
@@ -738,32 +769,39 @@ input, textarea, select { font-family: inherit; }
   text-decoration: none;
   cursor: pointer;
   position: relative;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 14px;
+  transition: transform 0.5s var(--ease-out);
 }
 
 .content-showcase-link:hover {
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-4px);
 }
 
 .content-showcase-link:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 6px;
-  border-radius: 18px;
 }
 
-.content-showcase-link:hover img {
+.content-showcase-link:hover img,
+.content-showcase-link:focus-visible img {
   opacity: 1;
-  box-shadow: 0 20px 50px rgba(201, 168, 76, 0.25);
+  box-shadow:
+    0 18px 44px -12px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(201, 168, 76, 0.45);
 }
 
 .content-showcase-track img {
   width: clamp(180px, 20vw, 260px);
+  aspect-ratio: 9 / 16;
   height: auto;
-  border-radius: 12px;
+  border-radius: 14px;
   flex-shrink: 0;
   object-fit: cover;
-  opacity: 0.7;
-  transition: opacity 0.4s ease, box-shadow 0.4s ease;
+  /* Favor the top third — faces and titles live there in reels/stories. */
+  object-position: center 28%;
+  opacity: 0.88;
+  transition: opacity 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  background: var(--bg-card);
 }
 
 @keyframes showcaseScroll {
@@ -771,9 +809,27 @@ input, textarea, select { font-family: inherit; }
   100% { transform: translateX(-50%); }
 }
 
-@keyframes showcaseScrollReverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
+/* Fade-in when the live feed replaces the static fallback */
+.content-showcase-track.is-live .content-showcase-link {
+  animation: showcaseFadeIn 0.6s var(--ease-out) both;
+}
+
+@keyframes showcaseFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-showcase-track { animation: none; }
+  .content-showcase {
+    /* Without motion the ticker becomes a single horizontal scroll strip. */
+    -webkit-mask-image: none;
+            mask-image: none;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+  .content-showcase-link { scroll-snap-align: start; }
+  .content-showcase-track.is-live .content-showcase-link { animation: none; }
 }
 
 /* ============================================
@@ -959,6 +1015,560 @@ input, textarea, select { font-family: inherit; }
 
 [data-expandable] {
   cursor: pointer;
+}
+
+/* ============================================
+   PLANNER — Revenue/Goal Simulator
+   ============================================ */
+.planner-section {
+  background: var(--bg);
+  padding: clamp(80px, 10vw, 140px) clamp(20px, 5vw, 80px);
+}
+
+.planner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(32px, 4vw, 56px);
+  background: rgba(20, 20, 20, 0.82);
+  border: 1px solid rgba(201, 168, 76, 0.16);
+  border-radius: 24px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    0 40px 100px -30px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.02) inset;
+  position: relative;
+  overflow: hidden;
+}
+
+.planner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at top left, rgba(201, 168, 76, 0.06), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(201, 168, 76, 0.04), transparent 60%);
+  pointer-events: none;
+}
+
+.planner > * { position: relative; z-index: 1; }
+
+.planner-head {
+  margin-bottom: clamp(28px, 3.5vw, 44px);
+  max-width: 680px;
+}
+
+.planner-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  padding: 6px 14px;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 999px;
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.planner-eyebrow::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(201, 168, 76, 0.8);
+}
+
+.planner-head h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  margin-bottom: 14px;
+}
+
+.planner-head h3 em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: -0.01em;
+}
+
+.planner-lede {
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.6;
+  color: var(--text);
+  max-width: 560px;
+}
+
+/* ---- Inputs ---- */
+.planner-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(20px, 2.5vw, 32px);
+  margin-bottom: clamp(28px, 3.5vw, 40px);
+}
+
+.planner-field {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  border-radius: 16px;
+  padding: 22px 24px 26px;
+  transition: border-color 240ms var(--ease-out), background-color 240ms var(--ease-out);
+}
+
+.planner-field:focus-within {
+  border-color: rgba(201, 168, 76, 0.3);
+  background: rgba(201, 168, 76, 0.025);
+}
+
+.planner-field label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.planner-field-label {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.planner-field-value {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.planner-field-value.is-target {
+  color: var(--gold);
+}
+
+/* ---- Custom range slider ---- */
+.planner-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  --fill: 30%;
+  --track-color: rgba(255, 255, 255, 0.06);
+  --accent: var(--gold);
+}
+
+.planner-range.is-target { --accent: var(--gold-light); }
+
+/* WebKit track */
+.planner-range::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--accent) var(--fill),
+    var(--track-color) var(--fill),
+    var(--track-color) 100%
+  );
+}
+.planner-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--accent);
+  margin-top: -8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
+}
+.planner-range:hover::-webkit-slider-thumb,
+.planner-range:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 2px 16px rgba(201, 168, 76, 0.5);
+}
+.planner-range:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 5px rgba(201, 168, 76, 0.55),
+    0 0 0 10px rgba(201, 168, 76, 0.18);
+}
+
+/* Firefox track */
+.planner-range::-moz-range-track {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--track-color);
+}
+.planner-range::-moz-range-progress {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.planner-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
+}
+.planner-range:hover::-moz-range-thumb,
+.planner-range:active::-moz-range-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 2px 16px rgba(201, 168, 76, 0.5);
+}
+.planner-range:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 5px rgba(201, 168, 76, 0.55),
+    0 0 0 10px rgba(201, 168, 76, 0.18);
+}
+
+/* ---- Scale visualizer ---- */
+.planner-scale {
+  margin-bottom: clamp(28px, 3.5vw, 40px);
+  padding: 0 6px;
+}
+
+.planner-scale-track {
+  position: relative;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 3px;
+  overflow: visible;
+  --from: 5%;
+  --to: 30%;
+}
+
+.planner-scale-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--from);
+  right: calc(100% - var(--to));
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+  border-radius: 3px;
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.35);
+  transition: left 360ms var(--ease-out), right 360ms var(--ease-out);
+}
+
+.planner-scale-marker {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+  transition: left 360ms var(--ease-out);
+  pointer-events: none;
+}
+
+.planner-scale-marker.start {
+  left: var(--from);
+  background: var(--cream-muted);
+  opacity: 0.6;
+}
+
+.planner-scale-marker.end {
+  left: var(--to);
+  background: var(--gold);
+  height: 22px;
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.6);
+}
+
+.planner-scale-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Outputs grid ---- */
+.planner-outputs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: clamp(32px, 4vw, 48px);
+}
+
+.planner-out {
+  position: relative;
+  padding: 22px 20px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(201, 168, 76, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 500ms var(--ease-out), border-color 500ms var(--ease-out);
+}
+
+.planner-out::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(201, 168, 76, 0.18), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.planner-out.pulsing {
+  transform: translateY(-2px);
+  border-color: rgba(201, 168, 76, 0.28);
+}
+.planner-out.pulsing::after { opacity: 1; }
+.planner-out.pulsing .planner-out-value { color: var(--gold); }
+
+.planner-out-label {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.planner-out-value {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--cream);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 10px;
+  transition: color 500ms var(--ease-out);
+  position: relative;
+}
+
+.planner-out-note {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text);
+  position: relative;
+}
+
+/* ---- Strategy list ---- */
+.planner-strategy {
+  padding-top: clamp(28px, 3vw, 36px);
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  margin-bottom: clamp(28px, 3.5vw, 40px);
+}
+
+.planner-strategy-eyebrow {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+
+.planner-strategy-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 28px;
+}
+
+.planner-strategy-item {
+  display: flex;
+  gap: 16px;
+  padding: 4px 0 4px 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+}
+
+.planner-strategy-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.planner-strategy-num {
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gold);
+  padding-top: 3px;
+  min-width: 28px;
+}
+
+.planner-strategy-body h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.015em;
+  color: var(--cream);
+  margin-bottom: 7px;
+  line-height: 1.25;
+}
+
+.planner-strategy-body p {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.planner-strategy-empty {
+  grid-column: 1 / -1;
+  padding: 24px 0;
+}
+.planner-strategy-empty h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+.planner-strategy-empty p {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 520px;
+}
+
+/* ---- CTA row ---- */
+.planner-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: clamp(22px, 2.5vw, 28px);
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  flex-wrap: wrap;
+}
+
+.planner-disclaimer {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  max-width: 520px;
+}
+
+.planner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 26px;
+  background: var(--gold);
+  color: #0a0a0a;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 24px -6px rgba(201, 168, 76, 0.35);
+  transition: background-color 240ms var(--ease-out), transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
+}
+
+.planner-cta:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 38px -6px rgba(201, 168, 76, 0.5);
+}
+
+.planner-cta svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 240ms var(--ease-out);
+}
+
+.planner-cta:hover svg { transform: translateX(3px); }
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .planner-section { padding: clamp(64px, 9vw, 110px) clamp(16px, 4vw, 40px); }
+  .planner-outputs { grid-template-columns: repeat(2, 1fr); }
+  .planner-head h3 { font-size: clamp(1.55rem, 4.4vw, 2.1rem); }
+  .planner-strategy-list { grid-template-columns: 1fr; gap: 16px; }
+  .planner-inputs { gap: 14px; }
+}
+
+@media (max-width: 700px) {
+  .planner { padding: 32px 20px 28px; border-radius: 20px; }
+  .planner-head { margin-bottom: 24px; }
+  .planner-head h3 { font-size: clamp(1.5rem, 6.2vw, 1.9rem); }
+  .planner-lede { font-size: 0.95rem; }
+  .planner-inputs { grid-template-columns: 1fr; gap: 12px; margin-bottom: 22px; }
+  .planner-field { padding: 18px 20px 22px; }
+  .planner-field-value { font-size: 1.55rem; }
+  .planner-scale { margin-bottom: 26px; }
+  .planner-outputs { grid-template-columns: 1fr; gap: 10px; margin-bottom: 30px; }
+  .planner-out { padding: 18px 18px 20px; }
+  .planner-out-label { margin-bottom: 10px; }
+  .planner-out-value { font-size: 1.6rem; margin-bottom: 8px; }
+  .planner-strategy { padding-top: 26px; margin-bottom: 26px; }
+  .planner-strategy-list { gap: 14px; }
+  .planner-cta-row { flex-direction: column; align-items: stretch; gap: 18px; }
+  .planner-cta { justify-content: center; width: 100%; padding: 16px 24px; }
+  .planner-disclaimer { text-align: left; }
+}
+
+@media (max-width: 440px) {
+  .planner { padding: 28px 16px 24px; }
+  .planner-eyebrow { font-size: 0.66rem; padding: 5px 12px; }
+  .planner-field { padding: 16px 16px 20px; }
+  .planner-field label { flex-wrap: wrap; }
+  .planner-field-value { font-size: 1.4rem; }
+  .planner-scale-legend { font-size: 0.62rem; }
+  .planner-out-value { font-size: 1.5rem; }
+}
+
+@media (min-width: 1600px) {
+  .planner { max-width: 1480px; padding: clamp(48px, 3.8vw, 68px); }
+  .planner-head h3 { font-size: clamp(2.4rem, 2.6vw, 3rem); }
+  .planner-out-value { font-size: clamp(2rem, 2.2vw, 2.4rem); }
+  .planner-field-value { font-size: clamp(1.8rem, 1.8vw, 2.1rem); }
+}
+
+@media (pointer: coarse) {
+  .planner-range { height: 44px; }
+  .planner-range::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: -12px; }
+  .planner-range::-moz-range-thumb { width: 26px; height: 26px; }
+  .planner-cta { padding-top: 15px; padding-bottom: 15px; min-height: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planner-scale-fill,
+  .planner-scale-marker,
+  .planner-out,
+  .planner-out-value,
+  .planner-strategy-item,
+  .planner-range::-webkit-slider-thumb,
+  .planner-range::-moz-range-thumb { transition: none !important; }
+  .planner-out.pulsing { transform: none; }
+  .planner-out.pulsing::after { opacity: 0.5; }
 }
 
 /* ============================================
@@ -2041,8 +2651,15 @@ input, textarea, select { font-family: inherit; }
 
   /* ---- Content showcase ---- */
   .content-showcase-track img {
-    width: clamp(120px, 30vw, 180px);
-    border-radius: 8px;
+    width: clamp(128px, 30vw, 180px);
+    border-radius: 12px;
+  }
+  .content-showcase-link { border-radius: 12px; }
+  .content-showcase {
+    /* Slightly wider fade on tablet/phone so the edge feels intentional
+       even when the visible viewport is narrow. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%);
   }
 
   /* ---- Process charts ---- */
@@ -2383,13 +3000,17 @@ input, textarea, select { font-family: inherit; }
   }
 
   .content-showcase-track img {
-    width: clamp(100px, 28vw, 150px);
-    border-radius: 6px;
+    width: clamp(112px, 32vw, 150px);
+    border-radius: 10px;
   }
+  .content-showcase-link { border-radius: 10px; }
 
   .content-showcase {
     gap: 10px;
-    padding: 30px 0;
+    padding: 32px 0;
+    /* Tighter fade on phones so the edge tension stays visible */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
   }
 
   .value-expand-inner p {
@@ -2407,6 +3028,133 @@ input, textarea, select { font-family: inherit; }
    — Initial state set by GSAP, not CSS,
      to avoid conflict with gsap.from()
    ============================================ */
+
+/* ============================================
+   SCROLL STORY — iframe-embedded React scenes,
+   scrubbed by parent scroll via postMessage
+   ============================================ */
+.scroll-story {
+  position: relative;
+  width: 100%;
+  /* Tall sentinel so ScrollTrigger has room to scrub */
+  height: 350vh;
+  background: #050505;
+}
+
+.scroll-story-pin {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #050505;
+}
+
+.scroll-story-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #0A0A0A;
+  opacity: 1;
+  /* Iframe must not swallow clicks — the parent overlay handles navigation */
+  pointer-events: none;
+}
+
+/* Full-surface click target — whole scene links to Instagram */
+.scroll-story-link {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.scroll-story-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -6px;
+  border-radius: 6px;
+}
+
+/* Soft edge blend so the iframe feels native to the page, not boxed-in.
+   Top fade kept light (nav already provides separation).
+   Bottom fade deeper to hand off cleanly into the ticker. */
+.scroll-story-pin::before,
+.scroll-story-pin::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.scroll-story-pin::before {
+  top: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, var(--bg) 0%, rgba(8,8,8,0) 100%);
+}
+.scroll-story-pin::after {
+  bottom: 0;
+  height: 160px;
+  background: linear-gradient(to top, var(--bg) 0%, rgba(8,8,8,0) 100%);
+}
+
+/* Progress tick — anchored bottom-right, aligned with landing typography */
+.scroll-story-progress {
+  position: absolute;
+  right: clamp(20px, 4vw, 56px);
+  bottom: clamp(24px, 4vw, 52px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(242, 234, 216, 0.5);
+  opacity: 0;
+  transition: opacity .6s var(--ease-out);
+}
+.scroll-story-progress.is-visible { opacity: 1; }
+.scroll-story-progress .track {
+  width: 96px;
+  height: 1px;
+  background: rgba(242, 234, 216, 0.1);
+  position: relative;
+}
+.scroll-story-progress .fill {
+  position: absolute;
+  left: 0; top: 0;
+  width: 0%;
+  height: 100%;
+  background: var(--gold);
+  /* no glow — keeps the tick restrained and on-system */
+}
+.scroll-story-progress .label {
+  font-variant-numeric: tabular-nums;
+  color: var(--cream-muted);
+  min-width: 2.2ch;
+}
+
+@media (max-width: 768px) {
+  .scroll-story { height: 260vh; }
+  .scroll-story-progress {
+    right: 16px;
+    bottom: 20px;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+  .scroll-story-progress .track { width: 64px; }
+  .scroll-story-pin::before { height: 56px; }
+  .scroll-story-pin::after  { height: 120px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-story { height: 100vh; }
+  .scroll-story-progress { display: none; }
+}
 
 </style>
 </head>
@@ -2480,6 +3228,30 @@ input, textarea, select { font-family: inherit; }
         <p>che lavori <em>per te</em>.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ========== SCROLL STORY — scroll-driven hero video ========== -->
+<section class="scroll-story" id="scrollStory" aria-label="La crescita in numeri">
+  <div class="scroll-story-pin" id="scrollStoryPin">
+    <iframe
+      class="scroll-story-frame"
+      id="scrollStoryFrame"
+      src="about:blank"
+      data-src="scroll-video/index.html"
+      title="Adam Marra — risultati in numeri"
+      loading="lazy"
+      aria-hidden="true"
+      tabindex="-1"></iframe>
+    <div class="scroll-story-progress" id="scrollStoryProgress" aria-hidden="true">
+      <span class="label" id="scrollStoryLabel">00%</span>
+      <span class="track"><span class="fill" id="scrollStoryFill"></span></span>
+    </div>
+    <a class="scroll-story-link"
+       href="https://www.instagram.com/adamarraconsulting/"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Apri il profilo Instagram di Adam Marra"></a>
   </div>
 </section>
 
@@ -2560,33 +3332,24 @@ input, textarea, select { font-family: inherit; }
 </section>
 
 <!-- ========== CONTENT SHOWCASE — Scrolling Screenshots ========== -->
+<div class="content-showcase-header" data-line-reveal>
+  <h2>I <em>contenuti</em></h2>
+</div>
 <section class="content-showcase" aria-label="Ultimi contenuti Instagram">
   <div class="content-showcase-track" id="contentTrack1">
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: la chiave più importante"><img src="93. la chiave più importante.png" alt="Cover video: la chiave più importante" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: strumenti utili"><img src="94. strumenti utili.png" alt="Cover video: strumenti utili" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: hai un funnel che funziona"><img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="Cover video: hai un funnel che funziona" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: lo sai che il fatturato"><img src="97. LO SAI CHE IL FATTURATO.png" alt="Cover video: lo sai che il fatturato" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: il tuo servizio è impeccabile"><img src="106. il tuo servizio è impeccabile 2.png" alt="Cover video: il tuo servizio è impeccabile" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="93. la chiave più importante.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="94. strumenti utili.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="97. LO SAI CHE IL FATTURATO.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="106. il tuo servizio è impeccabile 2.png" alt="" loading="lazy"></a>
-  </div>
-  <div class="content-showcase-track reverse" id="contentTrack2">
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: adam posso farlo"><img src="107. adam posso farlo 2.png" alt="Cover video: adam posso farlo" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: le tue ads non performano"><img src="108. le tue ads non performano 2.png" alt="Cover video: le tue ads non performano" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: adam voglio pubblicare"><img src="109. adam voglio pubblicare 2.png" alt="Cover video: adam voglio pubblicare" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: le ads non performano"><img src="110. le ads non performano 2.png" alt="Cover video: le ads non performano" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-label="Guarda post: un corso"><img src="111. un corso 2.png" alt="Cover video: un corso" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="107. adam posso farlo 2.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="108. le tue ads non performano 2.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="109. adam voglio pubblicare 2.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="110. le ads non performano 2.png" alt="" loading="lazy"></a>
-    <a class="content-showcase-link" href="https://www.instagram.com/adammarra_/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="111. un corso 2.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-label="Guarda post: la chiave più importante"><img src="93. la chiave più importante.png" alt="Cover video: la chiave più importante" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-label="Guarda post: strumenti utili"><img src="94. strumenti utili.png" alt="Cover video: strumenti utili" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-label="Guarda post: hai un funnel che funziona"><img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="Cover video: hai un funnel che funziona" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-label="Guarda post: lo sai che il fatturato"><img src="97. LO SAI CHE IL FATTURATO.png" alt="Cover video: lo sai che il fatturato" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-label="Guarda post: il tuo servizio è impeccabile"><img src="106. il tuo servizio è impeccabile 2.png" alt="Cover video: il tuo servizio è impeccabile" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="93. la chiave più importante.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="94. strumenti utili.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="96. HAI UN FUNNEL CHE FUNZIONA.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="97. LO SAI CHE IL FATTURATO.png" alt="" loading="lazy"></a>
+    <a class="content-showcase-link" href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="106. il tuo servizio è impeccabile 2.png" alt="" loading="lazy"></a>
   </div>
 </section>
-<!-- NOTA: gli href ora puntano tutti al profilo. Quando i 10 post saranno pubblici, sostituire ogni href con l'URL permalink del singolo post Instagram (es. https://www.instagram.com/p/ABC123/). Le copertine duplicate (quelle con aria-hidden) servono al loop infinito della track, non vanno indicizzate dagli screen reader. -->
+<!-- NOTA: il contenuto statico qui sopra è fallback. A runtime initContentShowcaseFeed() sostituisce entrambe le track con gli ultimi post di @adamarraconsulting presi via Behold (https://feeds.behold.so/wTHIH4NYLZMj4VzpSVkZ). Gli href puntano al permalink reale del singolo reel/post. -->
 
 <!-- ========== SERVIZI — Bento Grid ========== -->
 <section class="services section-pad" id="services">
@@ -2687,6 +3450,93 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ========== PLANNER — Revenue/Goal Simulator ========== -->
+<section class="planner-section" id="planner" aria-labelledby="plannerTitle">
+  <div class="planner" role="region" aria-label="Simulatore obiettivo fatturato">
+    <header class="planner-head">
+      <div class="planner-eyebrow">Simulatore · personalizza</div>
+      <h3 id="plannerTitle">Dal fatturato attuale al tuo <em>obiettivo reale</em>.</h3>
+      <p class="planner-lede">Muovi i cursori per vedere in tempo reale il lavoro necessario per colmare il gap. I numeri si ricalibrano in base alla strategia consigliata.</p>
+    </header>
+
+    <div class="planner-inputs">
+      <div class="planner-field">
+        <label for="pStart">
+          <span class="planner-field-label">Fatturato attuale</span>
+          <output class="planner-field-value" id="pStartVal" for="pStart">€200K</output>
+        </label>
+        <input
+          type="range"
+          class="planner-range"
+          id="pStart"
+          min="50" max="2000" step="10" value="200"
+          aria-label="Fatturato annuo attuale in migliaia di euro, da 50K a 2 milioni">
+      </div>
+      <div class="planner-field">
+        <label for="pTarget">
+          <span class="planner-field-label">Obiettivo annuo</span>
+          <output class="planner-field-value is-target" id="pTargetVal" for="pTarget">€800K</output>
+        </label>
+        <input
+          type="range"
+          class="planner-range is-target"
+          id="pTarget"
+          min="100" max="5000" step="10" value="800"
+          aria-label="Obiettivo di fatturato annuo in migliaia di euro, da 100K a 5 milioni">
+      </div>
+    </div>
+
+    <div class="planner-scale" aria-hidden="true">
+      <div class="planner-scale-track">
+        <div class="planner-scale-fill" id="pFill"></div>
+        <div class="planner-scale-marker start" id="pStartMark"></div>
+        <div class="planner-scale-marker end" id="pTargetMark"></div>
+      </div>
+      <div class="planner-scale-legend">
+        <span>€0</span>
+        <span>€2,5M</span>
+        <span>€5M</span>
+      </div>
+    </div>
+
+    <div class="planner-outputs">
+      <div class="planner-out">
+        <div class="planner-out-label">Gap da colmare</div>
+        <div class="planner-out-value" id="pGap">+€600K</div>
+        <div class="planner-out-note">Differenza tra attuale e obiettivo.</div>
+      </div>
+      <div class="planner-out">
+        <div class="planner-out-label">Nuovi clienti</div>
+        <div class="planner-out-value" id="pClients">75</div>
+        <div class="planner-out-note">Stima su ticket medio €8K.</div>
+      </div>
+      <div class="planner-out">
+        <div class="planner-out-label">Contenuti / mese</div>
+        <div class="planner-out-value" id="pContent">28</div>
+        <div class="planner-out-note">Output editoriale consigliato.</div>
+      </div>
+      <div class="planner-out">
+        <div class="planner-out-label">Orizzonte</div>
+        <div class="planner-out-value" id="pHorizon">9 mesi</div>
+        <div class="planner-out-note">Tempistica realistica stimata.</div>
+      </div>
+    </div>
+
+    <section class="planner-strategy" aria-live="polite">
+      <div class="planner-strategy-eyebrow">Piano suggerito</div>
+      <ul class="planner-strategy-list" id="pStrategyList"></ul>
+    </section>
+
+    <footer class="planner-cta-row">
+      <p class="planner-disclaimer">Stime basate su ticket medio €8K e conversione content-to-lead standard del settore consulenziale. Valori indicativi, non contrattuali.</p>
+      <a href="https://www.instagram.com/adamarraconsulting/" target="_blank" rel="noopener" class="planner-cta" data-magnetic>
+        Parliamone
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </footer>
   </div>
 </section>
 
@@ -3646,14 +4496,16 @@ input, textarea, select { font-family: inherit; }
     container.appendChild(suf);
   }
 
-  // Animate odometer: each digit rolls to target with stagger
+  // Animate odometer: each digit rolls to target with stagger.
+  // Each .stat-digit-char slot is 1.15em tall (matches .stat-digit-wrap height),
+  // so the roll offset MUST be 1.15em per digit — otherwise non-zero digits
+  // drift down by 0.05em per unit (5 sits lower than 0, etc).
   function rollOdometer(container, delay) {
     if (!container) return;
     var inners = container.querySelectorAll('.stat-digit-inner');
     inners.forEach(function(inner, i) {
       var target = parseInt(inner.getAttribute('data-target-digit'));
-      // Roll to position (target * 1.1em + 10th position for final)
-      var yTarget = -(target * 1.1); // em
+      var yTarget = -(target * 1.15); // em — matches slot height
       setTimeout(function() {
         inner.classList.add('animated');
         inner.style.transform = 'translateY(' + yTarget + 'em)';
@@ -4127,6 +4979,463 @@ input, textarea, select { font-family: inherit; }
 
 
   /* ——————————————————————————————————————————
+     S. Scroll Story — iframe postMessage bridge
+        Lazy-load iframe when section enters; scrub
+        progress 0..1 via ScrollTrigger → postMessage.
+     —————————————————————————————————————————— */
+  function initScrollStory() {
+    var section = document.getElementById('scrollStory');
+    var pin = document.getElementById('scrollStoryPin');
+    var frame = document.getElementById('scrollStoryFrame');
+    var progressWrap = document.getElementById('scrollStoryProgress');
+    var progressFill = document.getElementById('scrollStoryFill');
+    var progressLabel = document.getElementById('scrollStoryLabel');
+    if (!section || !frame) return;
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isReady = false;
+    var lastSent = -1;
+    var currentProgress = 0;
+
+    // Trim dead time at the head and tail of the 45s timeline:
+    //   p=0  → 1.5s (Scene01 title fully visible, no fade-in wait)
+    //   p=1  → 43.5s (Scene07 lockup near its final frame)
+    // Keeps every scene fully playable inside a tighter scroll window.
+    function mapProgress(p) {
+      var HEAD = 1.5 / 45;   // 0.0333
+      var TAIL = 1.5 / 45;
+      return HEAD + p * (1 - HEAD - TAIL);
+    }
+
+    function sendProgress(p) {
+      if (!isReady || reduced) return;
+      try {
+        frame.contentWindow && frame.contentWindow.postMessage(
+          { type: 'scroll-progress', value: mapProgress(p) }, '*'
+        );
+      } catch (err) {}
+    }
+
+    // Lazy-load iframe src only when section is close (preload as user approaches)
+    var loadTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top bottom+=50%',
+      once: true,
+      onEnter: function() {
+        if (frame.getAttribute('src') === 'about:blank') {
+          frame.setAttribute('src', frame.dataset.src);
+        }
+      }
+    });
+
+    function markReady() {
+      if (isReady) return;
+      isReady = true;
+      if (progressWrap) progressWrap.classList.add('is-visible');
+      // Sync current progress immediately — scroll may have stopped before ready
+      setTimeout(function() { sendProgress(currentProgress); }, 80);
+    }
+
+    // Parent listens for "ready" signal from iframe.
+    // Retry progress push in case the iframe's message listener attaches
+    // a few frames after we first receive the ready signal.
+    window.addEventListener('message', function(e) {
+      if (!e.data || e.data.type !== 'scroll-video-ready') return;
+      markReady();
+      // Resend a few times — protects against message dropped during first frames.
+      [200, 500, 900].forEach(function(ms) {
+        setTimeout(function() { sendProgress(currentProgress); }, ms);
+      });
+    });
+
+    // Fallback: if the ready postMessage gets missed (timing/live-reload),
+    // use iframe load event + a short delay for React mount.
+    frame.addEventListener('load', function() {
+      setTimeout(markReady, 1500);
+    });
+
+    // ScrollTrigger scrubs progress 0..1 across the pinned sentinel
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.4,
+      onUpdate: function(self) {
+        var p = self.progress;
+        currentProgress = p;
+        // Throttle postMessage to frame updates only
+        if (Math.abs(p - lastSent) < 0.0008) return;
+        lastSent = p;
+
+        if (progressFill) progressFill.style.width = (p * 100).toFixed(1) + '%';
+        if (progressLabel) progressLabel.textContent = Math.round(p * 100).toString().padStart(2, '0') + '%';
+
+        sendProgress(p);
+      }
+    });
+  }
+
+
+  /* ——————————————————————————————————————————
+     T. Content showcase — live Instagram feed via Behold
+        Replaces the static cover grid with the latest
+        posts fetched from https://behold.so. On failure
+        we leave the static fallback in place.
+     —————————————————————————————————————————— */
+  function initContentShowcaseFeed() {
+    var FEED_URL = 'https://feeds.behold.so/wTHIH4NYLZMj4VzpSVkZ';
+    var track1 = document.getElementById('contentTrack1');
+    if (!track1) return;
+
+    fetch(FEED_URL, { mode: 'cors' })
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(data) {
+        var posts = (data && Array.isArray(data.posts)) ? data.posts : [];
+        if (posts.length === 0) return;
+
+        // Single-row showcase: all posts in one track.
+        var row1 = posts.slice();
+
+        function pickThumb(p) {
+          if (p.sizes && p.sizes.medium && p.sizes.medium.mediaUrl) return p.sizes.medium.mediaUrl;
+          if (p.sizes && p.sizes.large && p.sizes.large.mediaUrl) return p.sizes.large.mediaUrl;
+          return p.thumbnailUrl || p.mediaUrl;
+        }
+
+        function buildItem(post, hidden) {
+          var a = document.createElement('a');
+          a.className = 'content-showcase-link';
+          a.href = post.permalink || 'https://www.instagram.com/adamarraconsulting/';
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          if (hidden) { a.setAttribute('aria-hidden', 'true'); a.setAttribute('tabindex', '-1'); }
+          else { a.setAttribute('aria-label', 'Apri post su Instagram'); }
+          var img = document.createElement('img');
+          img.src = pickThumb(post);
+          img.alt = hidden ? '' : (post.prunedCaption || 'Post Instagram');
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          a.appendChild(img);
+          return a;
+        }
+
+        // Approx item width including gap — matches CSS clamp(180,20vw,260) + 16px gap.
+        function approxItemWidth() {
+          var w = Math.min(260, Math.max(180, window.innerWidth * 0.20));
+          return w + 16;
+        }
+
+        // Fill a track so each half covers at least the viewport width
+        // (so translateX(-50%) never reveals a gap). A 1.25× safety margin
+        // keeps it clean on wide monitors / after zoom.
+        function fillTrack(track, list, baseSeconds) {
+          track.innerHTML = '';
+          var needPerHalf = Math.ceil((window.innerWidth * 1.25) / approxItemWidth());
+          var repeatsPerHalf = Math.max(1, Math.ceil(needPerHalf / list.length));
+          var halfItems = [];
+          for (var r = 0; r < repeatsPerHalf; r++) halfItems = halfItems.concat(list);
+
+          // First half (visible/indexed) + duplicated half (hidden from a11y) for loop
+          halfItems.forEach(function(p) { track.appendChild(buildItem(p, false)); });
+          halfItems.forEach(function(p) { track.appendChild(buildItem(p, true)); });
+
+          // Scale animation duration with content length so scroll speed stays constant
+          // regardless of how many repeats we needed. 6 items @ base speed is the anchor.
+          var refItems = 6;
+          var scale = halfItems.length / refItems;
+          track.style.animationDuration = (baseSeconds * scale).toFixed(1) + 's';
+        }
+
+        fillTrack(track1, row1, 55);
+        track1.classList.add('is-live');
+
+        // Re-layout on resize (debounced) so the track stays gap-free
+        // across viewport changes (e.g. rotate, window resize).
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function() {
+            track1.classList.remove('is-live');
+            fillTrack(track1, row1, 55);
+          }, 250);
+        });
+      })
+      .catch(function(err) {
+        // Silent fallback — the static covers stay visible.
+        if (window.console) console.warn('[behold] feed unavailable, using fallback:', err);
+      });
+  }
+
+
+  /* ——————————————————————————————————————————
+     U. Revenue/Goal Planner — interactive simulator
+     —————————————————————————————————————————— */
+  function initPlanner() {
+    var root = document.getElementById('planner');
+    if (!root) return;
+
+    var startInput   = document.getElementById('pStart');
+    var targetInput  = document.getElementById('pTarget');
+    var startValEl   = document.getElementById('pStartVal');
+    var targetValEl  = document.getElementById('pTargetVal');
+    var fillEl       = document.getElementById('pFill');
+    var startMark    = document.getElementById('pStartMark');
+    var targetMark   = document.getElementById('pTargetMark');
+    var gapEl        = document.getElementById('pGap');
+    var clientsEl    = document.getElementById('pClients');
+    var contentEl    = document.getElementById('pContent');
+    var horizonEl    = document.getElementById('pHorizon');
+    var listEl       = document.getElementById('pStrategyList');
+
+    if (!startInput || !targetInput) return;
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Strategy tiers (gap thresholds in K)
+    var tiers = [
+      {
+        max: 200,
+        items: [
+          ['Affina il posizionamento', 'Riscrivi bio, caption e proposta in modo che parlino a UN solo avatar. Chiarezza batte volume.'],
+          ['Riattiva la base warm', 'Lista contatti, DM dormienti, clienti passati: il gap più piccolo si chiude dal pubblico che già ti conosce.'],
+          ['Ottimizza la conversione', 'Funnel di qualificazione a 3 step: contenuto → lead magnet → call. Meno dispersione, più closing.'],
+          ['Case study verticali', 'Un caso studio dettagliato vale più di dieci post generici. Prova sociale sopra tutto.']
+        ]
+      },
+      {
+        max: 800,
+        items: [
+          ['Brand editoriale coerente', 'Definisci 3 pilastri di contenuto e distribuisci su 2 canali. La ripetizione intelligente costruisce autorità.'],
+          ['Sistema lead generation', 'Dal post al calendario: automatizza il percorso di qualificazione con funnel e sequenze email mirate.'],
+          ['Alza il ticket medio', 'Pacchetti premium e retainer. Meglio 10 clienti da €15K che 80 da €2K: stesso fatturato, meno logistica.'],
+          ['Presenza off-platform', 'Podcast, ospite in community, partnership editoriali. Il brand cresce dove non devi pagare per esistere.']
+        ]
+      },
+      {
+        max: 2000,
+        items: [
+          ['Verticalizza la nicchia', 'Da consulente generalista a riferimento di settore. Un pubblico più stretto paga tariffe più alte.'],
+          ['Team operativo leggero', 'Delega produzione e gestione. Tu resti sulla strategia e sulle call, dove crei il vero valore.'],
+          ['Offerta high-ticket scalabile', 'Programma strutturato, community o mastermind: margini più alti senza scambiare più ore.'],
+          ['Distribuzione multicanale', 'Video long-form, short-form, newsletter, LinkedIn. Replica lo stesso messaggio in formati diversi.'],
+          ['Partnership strategiche', 'Integra la tua offerta in ecosistemi più grandi. Accedi al loro pubblico senza ricostruire il tuo da zero.']
+        ]
+      },
+      {
+        max: Infinity,
+        items: [
+          ['Riposiziona come brand', 'Non sei più un freelance: sei un brand con una voce e una visione. Tutto parte da lì.'],
+          ['Flagship offer', 'Costruisci UN prodotto/servizio definitivo che diventa la tua firma. Tutto il resto gli fa da contorno.'],
+          ['Media arm interno', 'Il content non è marketing: è un asset. Tratta i tuoi canali come un publisher, non come un venditore.'],
+          ['Team e processi', 'Strutture chiare, deleghe reali, SOP documentate. Scalare senza sistemi significa implodere.'],
+          ['Capitale relazionale', 'Eventi, collaborazioni di peso, PR strategica. A questo livello il business si fa tra persone, non online.'],
+          ['Strumenti di leva', 'Prodotti digitali, libri, certificazioni. Crea asset che lavorano mentre tu dormi.']
+        ]
+      }
+    ];
+
+    function fmtMoney(k) {
+      if (k >= 1000) {
+        var m = k / 1000;
+        var fixed = (m % 1 === 0) ? m.toFixed(0) : m.toFixed(1);
+        return '€' + fixed.replace('.', ',') + 'M';
+      }
+      return '€' + Math.round(k) + 'K';
+    }
+
+    function fmtSignedMoney(k) {
+      var sign = k > 0 ? '+' : '';
+      if (k === 0) return '€0';
+      return sign + fmtMoney(k);
+    }
+
+    function fmtInt(n) {
+      return Math.round(n).toString();
+    }
+
+    function fmtMonths(n) {
+      var r = Math.round(n);
+      return r + ' ' + (r === 1 ? 'mese' : 'mesi');
+    }
+
+    // Number tween helper
+    function tweenText(el, from, to, fmt, dur) {
+      if (!el) return;
+      dur = dur || 500;
+      if (el._raf) cancelAnimationFrame(el._raf);
+      if (reduceMotion) { el.textContent = fmt(to); return; }
+      var t0 = performance.now();
+      function step(now) {
+        var t = Math.min((now - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = fmt(from + (to - from) * eased);
+        if (t < 1) el._raf = requestAnimationFrame(step);
+        else el._raf = null;
+      }
+      el._raf = requestAnimationFrame(step);
+    }
+
+    // Pulse helper
+    function pulse(el) {
+      if (!el) return;
+      if (el._pulseTO) clearTimeout(el._pulseTO);
+      el.classList.add('pulsing');
+      el._pulseTO = setTimeout(function() {
+        el.classList.remove('pulsing');
+        el._pulseTO = null;
+      }, 600);
+    }
+
+    function pickStrategy(gap) {
+      for (var i = 0; i < tiers.length; i++) {
+        if (gap <= tiers[i].max) return tiers[i].items;
+      }
+      return tiers[tiers.length - 1].items;
+    }
+
+    // Previous state
+    var prev = { gap: null, clients: null, content: null, horizon: null, tierKey: null };
+
+    // Minimum gap for forced validation (K)
+    var GAP_MIN = 50;
+
+    function updateSliderFill(input) {
+      var min = parseFloat(input.min);
+      var max = parseFloat(input.max);
+      var val = parseFloat(input.value);
+      var pct = ((val - min) / (max - min)) * 100;
+      input.style.setProperty('--fill', pct + '%');
+    }
+
+    function render() {
+      var start = parseFloat(startInput.value);
+      var target = parseFloat(targetInput.value);
+
+      // Validation: target must be strictly greater than start
+      if (target <= start) {
+        var forced = Math.min(parseFloat(targetInput.max), start + GAP_MIN);
+        target = forced;
+        targetInput.value = forced;
+      }
+
+      updateSliderFill(startInput);
+      updateSliderFill(targetInput);
+
+      // Input labels — always instant
+      startValEl.textContent = fmtMoney(start);
+      targetValEl.textContent = fmtMoney(target);
+
+      // Scale visualizer (range 0 → 5000)
+      var SCALE_MAX = 5000;
+      var fromPct = (start / SCALE_MAX) * 100;
+      var toPct = (target / SCALE_MAX) * 100;
+      var track = fillEl.parentElement;
+      track.style.setProperty('--from', fromPct + '%');
+      track.style.setProperty('--to', toPct + '%');
+      fillEl.style.left = fromPct + '%';
+      fillEl.style.right = (100 - toPct) + '%';
+      startMark.style.left = fromPct + '%';
+      targetMark.style.left = toPct + '%';
+
+      var gap = target - start;
+      var clients = gap / 8; // ticket medio €8K
+
+      // Content/mese — scala in base al gap
+      var content;
+      if (gap <= 200) content = 18;
+      else if (gap <= 800) content = 28;
+      else if (gap <= 2000) content = 42;
+      else content = 58;
+
+      // Orizzonte in mesi — cresce con il gap ma realistico
+      var horizon;
+      if (gap <= 200) horizon = 6;
+      else if (gap <= 600) horizon = 9;
+      else if (gap <= 1200) horizon = 12;
+      else if (gap <= 2500) horizon = 18;
+      else horizon = 24;
+
+      // Tween numeric outputs
+      var pulseTargets = [];
+      if (prev.gap === null) {
+        gapEl.textContent = fmtSignedMoney(gap);
+        clientsEl.textContent = fmtInt(clients);
+        contentEl.textContent = fmtInt(content);
+        horizonEl.textContent = fmtMonths(horizon);
+      } else {
+        if (prev.gap !== gap) {
+          tweenText(gapEl, prev.gap, gap, fmtSignedMoney);
+          pulseTargets.push(gapEl.parentElement);
+        }
+        if (prev.clients !== clients) {
+          tweenText(clientsEl, prev.clients, clients, fmtInt);
+          pulseTargets.push(clientsEl.parentElement);
+        }
+        if (prev.content !== content) {
+          tweenText(contentEl, prev.content, content, fmtInt);
+          pulseTargets.push(contentEl.parentElement);
+        }
+        if (prev.horizon !== horizon) {
+          tweenText(horizonEl, prev.horizon, horizon, function(n) { return fmtMonths(n); });
+          pulseTargets.push(horizonEl.parentElement);
+        }
+      }
+      pulseTargets.forEach(pulse);
+
+      prev.gap = gap;
+      prev.clients = clients;
+      prev.content = content;
+      prev.horizon = horizon;
+
+      // Strategy list — re-render only when tier changes
+      var items, tierKey;
+      if (gap <= 0) {
+        items = null;
+        tierKey = 'empty';
+      } else {
+        items = pickStrategy(gap);
+        tierKey = items.map(function(i) { return i[0]; }).join('|');
+      }
+
+      if (tierKey !== prev.tierKey) {
+        listEl.innerHTML = '';
+        if (items === null) {
+          var emptyLi = document.createElement('li');
+          emptyLi.className = 'planner-strategy-empty';
+          emptyLi.innerHTML = '<h4>Mantieni ciò che funziona</h4><p>Sei già dove vuoi essere. Il lavoro ora è proteggere il margine, consolidare il brand e scegliere con cura dove crescere ulteriormente.</p>';
+          listEl.appendChild(emptyLi);
+          requestAnimationFrame(function() { emptyLi.classList.add('is-visible'); });
+        } else {
+          items.forEach(function(item, i) {
+            var li = document.createElement('li');
+            li.className = 'planner-strategy-item';
+            var idx = String(i + 1).padStart(2, '0');
+            li.innerHTML =
+              '<span class="planner-strategy-num">' + idx + '</span>' +
+              '<div class="planner-strategy-body">' +
+                '<h4>' + item[0] + '</h4>' +
+                '<p>' + item[1] + '</p>' +
+              '</div>';
+            listEl.appendChild(li);
+            var delay = reduceMotion ? 0 : i * 40;
+            setTimeout(function() { li.classList.add('is-visible'); }, delay);
+          });
+        }
+        prev.tierKey = tierKey;
+      }
+    }
+
+    startInput.addEventListener('input', render);
+    startInput.addEventListener('change', render);
+    targetInput.addEventListener('input', render);
+    targetInput.addEventListener('change', render);
+
+    // Initial render (no pulse, no tween — prev is null)
+    render();
+  }
+
+
+  /* ——————————————————————————————————————————
      INIT — Boot sequence
      —————————————————————————————————————————— */
   gsap.registerPlugin(ScrollTrigger);
@@ -4156,6 +5465,9 @@ input, textarea, select { font-family: inherit; }
     initStatAccordion();
     initHamburger();
     initSmoothAnchors();
+    initScrollStory();
+    initContentShowcaseFeed();
+    initPlanner();
     ScrollTrigger.refresh();
   });
 
